@@ -57,26 +57,20 @@ const postSchema = new mongoose.Schema(
   }
 );
 const Post = mongoose.model("Post", postSchema);
-
-// 實體 instance
-const testPost = new Post({
+Post.create({
   name: "test",
   tags: "food",
   type: "group",
   image: "",
-
   content: "test",
   likes: 0,
   comments: 0,
-});
-
-testPost
-  .save()
+})
   .then(() => {
-    console.log("新增資料成功");
+    console.log("資料寫入成功");
   })
   .catch((err) => {
-    console.log(err);
+    console.log(err.errors);
   });
 
 var indexRouter = require("./routes/index");
