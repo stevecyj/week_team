@@ -3,9 +3,17 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
+const Post = require("./models/post"); // model Post
 const mongoose = require("mongoose"); //連接資料庫
+const dotenv = require("dotenv");
+dotenv.config({ path: "./config.env" });
+const DB = process.env.DATABASE.replace(
+  "<password>",
+  process.env.DATABASE_PASSWORD
+);
+
 mongoose
-  .connect("mongodb://localhost:27017/posts")
+  .connect(DB)
   .then(() => {
     console.log("資料庫連線成功");
   })
@@ -13,54 +21,13 @@ mongoose
     console.log(err);
   });
 
-const postSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: [true, "貼文姓名未填寫"],
-    },
-    tags: [
-      {
-        type: String,
-        required: [true, "貼文標籤 tags 未填寫"],
-      },
-    ],
-    type: {
-      type: String,
-      enum: ["group", "person"],
-      required: [true, "貼文類型 type 未填寫"],
-    },
-    image: {
-      type: String,
-      default: "",
-    },
-    createAt: {
-      type: Date,
-      default: Date.now,
-      select: false,
-    },
-    content: {
-      type: String,
-      required: [true, "Content 未填寫"],
-    },
-    likes: {
-      type: Number,
-      default: 0,
-    },
-    comments: {
-      type: Number,
-      default: 0,
-    },
-  },
-  {
-    versionKey: false,
-  }
-);
-const Post = mongoose.model("Post", postSchema);
+// db, create
 Post.create({
-  name: "test",
-  tags: "food",
-  type: "group",
+  userName: "test",
+  userPhoto:
+    "https://images.unsplash.com/photo-1650347325312-f2dea7f5a50e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+  tags: ["預設"],
+  type: "person",
   image: "",
   content: "test",
   likes: 0,
