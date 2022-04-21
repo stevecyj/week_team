@@ -47,5 +47,12 @@ const postSchema = new mongoose.Schema(
   }
 );
 
+// specific response content
+postSchema.methods.toJSON = function () {
+  return {
+    postId: this._id,
+  };
+};
+
 const Post = mongoose.model("Post", postSchema);
 module.exports = Post;
