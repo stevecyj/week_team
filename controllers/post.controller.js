@@ -2,6 +2,7 @@ const PostAddPost = require("../models/post.model"); // model Post
 
 // create and save a new post
 exports.create = async (req, res) => {
+  console.log(req.body);
   try {
     let dataPost = {
       userName: req.body.userName,
@@ -28,7 +29,10 @@ exports.findAll = (req, res) => {};
 exports.findOne = (req, res) => {};
 
 // search posts by keyword
-exports.search = (req, res) => {};
+exports.search = (req, res) => {
+  let dataSearch = req.body;
+  console.log(dataSearch);
+};
 
 // update a post by id
 exports.update = (req, res) => {};

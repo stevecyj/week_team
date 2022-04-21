@@ -12,7 +12,7 @@ router.get("/getAllPosts", postsController.findAll);
 router.get("/getOnePost/:id", postsController.findOne);
 
 // search posts by keyword
-router.get("/search/:keyword", postsController.search);
+router.post("/search", postsController.search);
 
 // update a post by id
 router.put("/updatePost/:id", postsController.update);
