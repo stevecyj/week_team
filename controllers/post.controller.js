@@ -27,6 +27,9 @@ exports.findAll = (req, res) => {};
 // find a single post by id
 exports.findOne = (req, res) => {};
 
+// search posts by keyword
+exports.search = (req, res) => {};
+
 // update a post by id
 exports.update = (req, res) => {};
 

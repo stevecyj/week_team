@@ -11,6 +11,9 @@ router.get("/getAllPosts", postsController.findAll);
 // find a single post by id
 router.get("/getOnePost/:id", postsController.findOne);
 
+// search posts by keyword
+router.get("/search/:keyword", postsController.search);
+
 // update a post by id
 router.put("/updatePost/:id", postsController.update);
 
