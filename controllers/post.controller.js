@@ -2,7 +2,6 @@ const PostAddPost = require("../models/post.model"); // model Post
 
 // create and save a new post
 exports.create = async (req, res) => {
-  console.log(req.body);
   try {
     let dataPost = {
       userName: req.body.userName,
