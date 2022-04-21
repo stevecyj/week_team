@@ -4,7 +4,7 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const bodyParser = require("body-parser");
-const Post = require("./models/post"); // model Post
+const Post = require("./models/post.model"); // model Post
 const mongoose = require("mongoose"); //連接資料庫
 const dotenv = require("dotenv");
 dotenv.config({ path: "./config.env" });

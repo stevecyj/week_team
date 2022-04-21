@@ -1,4 +1,4 @@
-const Post = require("../models/post"); // model Post
+const PostAddPost = require("../models/post.model"); // model Post
 
 // create and save a new post
 exports.create = async (req, res) => {
@@ -14,20 +14,11 @@ exports.create = async (req, res) => {
       comments: req.body.comments,
     };
 
-    const newPost = await Post.create(dataPost);
-    let resNewPost = Object.entries(newPost);
-    console.log(resNewPost);
-    res.status(200).send({ status: "success", payload: newPost });
-  } catch (error) {}
+    const newPost = await PostAddPost.create(dataPost);
 
-  // Post.create(dataPost)
-  //   .then(() => {
-  //     console.log("資料寫入成功");
-  //     res.status(200).send({ status: "success", payload: dataPost });
-  //   })
-  //   .catch((err) => {
-  //     console.log(err.errors);
-  //   });
+    let payload = { postId: newPost._id };
+    res.status(200).send({ status: "success", payload });
+  } catch (error) {}
 };
 
 // retrieve all posts from db

@@ -47,12 +47,21 @@ const postSchema = new mongoose.Schema(
   }
 );
 
-// specific response content
-postSchema.methods.toJSON = function () {
-  return {
-    postId: this._id,
-  };
-};
+// ❗specific response content
+// postSchema.methods.toJSON = function () {
+//   return {
+//     postId: this._id,
+//     userName: this.userName,
+//     userPhoto: this.userPhoto,
+//     tags: this.tags,
+//     type: this.type,
+//     image: this.image,
+//     content: this.content,
+//     likes: this.likes,
+//     comments: this.comments,
+//     createAt: this.createAt,
+//   };
+// };
 
 const Post = mongoose.model("Post", postSchema);
 module.exports = Post;
