@@ -33,7 +33,7 @@ exports.search = async (req, res) => {
   console.log(req.body);
   try{
     let {keyword, sortby, limit = 10, page = 1} = req.body;
-    let filter = keyword ? {} : {content: new RegExp(`${keyword}`)};
+    let filter = keyword ? {content: new RegExp(`${keyword}`)} : {};
     let sort = sortby === 'datetime_pub' ? {'createAt': 1} : {};
     let skip = limit * (page - 1);
 
