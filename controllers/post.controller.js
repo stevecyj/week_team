@@ -35,6 +35,7 @@ exports.search = async (req, res) => {
     let {keyword, sortby, limit = 10, page = 1} = req.body;
     let filter = keyword ? {content: new RegExp(`${keyword}`)} : {};
     let sort = sortby === 'datetime_pub' ? {'createAt': 1} : {};
+    if(page < 0) { page = 1 }
     let skip = limit * (page - 1);
 
     const count = await Post.find(filter).count();
