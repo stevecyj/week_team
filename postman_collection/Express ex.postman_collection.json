@@ -1,0 +1,100 @@
+{
+  "info": {
+    "_postman_id": "c97aafcd-264b-4fe1-aa65-e4e62d4c45b8",
+    "name": "Express ex",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "GET index",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"content\": \"test content\",\r\n    \"image\": \"\",\r\n    \"userName\": \"\",\r\n    \"userPhoto\": \"https://images.unsplash.com/photo-1650347325312-f2dea7f5a50e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}",
+          "host": ["{{URL}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "新增文章",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"userName\": \"jojo\",\r\n    \"userPhoto\": \"https://images.unsplash.com/photo-1650347325312-f2dea7f5a50e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80\",\r\n    \"tags\": [\r\n        \"預設\"\r\n    ],\r\n    \"image\": \"\",\r\n    \"content\": \"test content\",\r\n    \"type\": \"person\",\r\n    \"likes\": 0,\r\n    \"comments\": 0\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/posts/addPost",
+          "host": ["{{URL}}"],
+          "path": ["posts", "addPost"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "New Request",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"keyword\": \"\",\r\n    \"sortby\": \"datetime_pub\", \r\n    \"limit\": \"\", \r\n    \"page\": \"\" \r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{URL}}/posts/search",
+          "host": ["{{URL}}"],
+          "path": ["posts", "search"]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "URL",
+      "value": "http://192.168.0.100:3005",
+      "type": "string"
+    }
+  ]
+}
