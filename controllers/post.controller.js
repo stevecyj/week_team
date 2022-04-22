@@ -40,7 +40,7 @@ exports.search = async (req, res) => {
     const count = await Post.find(filter).count();
     const posts = await Post.find(filter).sort(sort).skip(skip).limit(limit);
     // console.log(posts);
-    let resPost = posts.map((item) => {
+    let resPosts = posts.map((item) => {
       return {
         postId: item._id,
         userName: item.userName,
@@ -50,7 +50,7 @@ exports.search = async (req, res) => {
         datetime_pub: item.createAt
       }
     })
-    let payload = { count, limit, page, resPost};
+    let payload = { count, limit, page, posts: resPosts};
     res.status(200).send({ status: "success", payload });
   }
   catch(error) {
