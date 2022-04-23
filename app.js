@@ -7,6 +7,8 @@ const bodyParser = require("body-parser");
 const Post = require("./models/post.model"); // model Post
 const mongoose = require("mongoose"); //連接資料庫
 const dotenv = require("dotenv");
+const cors = require('cors');
+
 dotenv.config({ path: "./config.env" });
 const DB = process.env.DATABASE.replace(
   "<password>",
@@ -53,6 +55,7 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 app.use(logger("dev"));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
