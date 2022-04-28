@@ -4,51 +4,15 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const bodyParser = require("body-parser");
-const Post = require("./models/post.model"); // model Post
-const mongoose = require("mongoose"); //連接資料庫
-const dotenv = require("dotenv");
-const cors = require('cors');
-
-dotenv.config({ path: "./config.env" });
-const DB = process.env.DATABASE.replace(
-  "<password>",
-  process.env.DATABASE_PASSWORD
-);
-
-mongoose
-  .connect(DB)
-  .then(() => {
-    console.log("資料庫連線成功");
-  })
-  .catch((err) => {
-    console.log("資料庫無法連線", err);
-    process.exit();
-  });
-
-// db, create
-// Post.create({
-//   userName: "test",
-//   userPhoto:
-//     "https://images.unsplash.com/photo-1650347325312-f2dea7f5a50e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
-// tags: ["預設"],
-// type: "person",
-// image: "",
-// content: "test",
-// likes: 0,
-// comments: 0,
-// })
-//   .then(() => {
-//     console.log("資料寫入成功");
-//   })
-//   .catch((err) => {
-//     console.log(err.errors);
-//   });
+const cors = require("cors");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var postsRouter = require("./routes/posts");
 
 var app = express();
+
+require("./connections");
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
