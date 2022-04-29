@@ -7,7 +7,7 @@ exports.create = async (req, res) => {
       userName: req.body.userName,
       userPhoto: req.body.userPhoto,
       tags: req.body.tags,
-      type: req.body.type || 'person',
+      type: req.body.type || "person",
       image: req.body.image,
       content: req.body.content,
       likes: req.body.likes,
@@ -16,8 +16,7 @@ exports.create = async (req, res) => {
     const newPost = await Post.create(dataPost);
     let payload = { postId: newPost._id };
     res.status(200).send({ status: "success", payload });
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error);
   }
 };
@@ -30,12 +29,13 @@ exports.findOne = (req, res) => {};
 
 // search posts by keyword
 exports.search = async (req, res) => {
-  console.log(req.body);
-  try{
-    let {keyword, sortby, limit = 10, page = 1} = req.body;
-    let filter = keyword ? {content: new RegExp(`${keyword}`)} : {};
-    let sort = sortby === 'datetime_pub' ? {'createAt': 1} : {};
-    if(page < 0) { page = 1 }
+  try {
+    let { keyword, sortby, limit = 10, page = 1 } = req.body;
+    let filter = keyword ? { content: new RegExp(`${keyword}`) } : {};
+    let sort = sortby === "datetime_pub" ? { createAt: 1 } : {};
+    if (page < 0) {
+      page = 1;
+    }
     let skip = limit * (page - 1);
 
     const count = await Post.find(filter).count();
@@ -48,13 +48,12 @@ exports.search = async (req, res) => {
         userPhoto: item.userPhoto,
         content: item.content,
         image: item.image,
-        datetime_pub: item.createAt
-      }
-    })
-    let payload = { count, limit, page, posts: resPosts};
+        datetime_pub: item.createAt,
+      };
+    });
+    let payload = { count, limit, page, posts: resPosts };
     res.status(200).send({ status: "success", payload });
-  }
-  catch(error) {
+  } catch (error) {
     console.log(error);
   }
 };
