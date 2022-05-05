@@ -36,10 +36,13 @@ const postSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    comments: {
-      type: Number,
-      default: 0,
-    },
+    comments: [
+      new mongoose.Schema({
+        userName: String,
+        userPhoto: String,
+        message : String
+      })
+    ]
   },
   {
     versionKey: false,
