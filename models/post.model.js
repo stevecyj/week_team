@@ -9,6 +9,11 @@ const postSchema = new mongoose.Schema(
       type: String,
       required: [true, "貼文照片未上傳"],
     },
+    user: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      required: [true, "使用者資訊未填寫"],
+    },
     tags: [
       {
         type: String,
