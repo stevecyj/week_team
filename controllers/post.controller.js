@@ -44,12 +44,12 @@ exports.search = async (req, res) => {
     }
     else if(userId) { // 動態牆搜尋：1.呈現使用者追蹤對象和自己的發文 2.使用者無追縱對象時，由系統隨機抽樣10人給使用者(不足10人使用全清單)
       const users = await User.find({ _id: userId });
-      let follow = users[0].follow
+      let follow = users[0] ? users[0].follow.map(item => item.id) : [];
 
       if(!follow.length) { // 處理初始使用者未有follow時的動態牆搜尋 
         // 之後可用資料庫語法來refact
         const userList = await User.find({});
-        if(userList.length <= 10) {
+        if(userList.length < 10) {
           follow = userList.filter(item => item._id.toString() !== userId).map(item => item._id.toString());
         }
         else{
@@ -70,6 +70,7 @@ exports.search = async (req, res) => {
       }
 
       follow.push(userId);
+      // console.log(follow);
 
       filter.user = { $in: follow }
     }
@@ -93,6 +94,7 @@ exports.search = async (req, res) => {
     res.status(200).send({ status: "success", payload });
   } catch (error) {
     console.log(error);
+    res.status(500).send({ status: 'fail', message: 'unexpected error, please report to system manager!'});
   }
 };
 

@@ -27,11 +27,11 @@ const userSchema = mongoose.Schema(
             default: 'notAccess'
         },
         follow: { // 追縱
-            type: [String],
+            type: [{id: {type: String}, datetime_update: {type: Date, default: Date.now}}],
             default: []
         },
         beFollowed: {
-            type: [String],
+            type: [{id: {type: String}, datetime_update: {type: Date, default: Date.now}}],
             default: []
         },
         likeList: {
