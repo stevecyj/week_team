@@ -176,7 +176,7 @@ exports.delete = async(req, res) => {
 };
 
 // delete all posts
-exports.deleteAll = async(req, res) => {
+exports.update = async(req, res) => {
   await Post.deleteMany({});
   successHandler(res,"全部資料已刪除")
 };
