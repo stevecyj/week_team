@@ -25,7 +25,7 @@ router.patch("/updatePost/:id", postsController.update);
 router.delete("/deletePost/:id", postsController.delete);
 
 // delete all posts
-router.delete("/deleteAllPosts", postsController.deleteAll);
+// router.delete("/deleteAllPosts", postsController.deleteAll);
 
 // find all published posts
 router.get("/getAllPublishedPosts", postsController.findAllPublished);
