@@ -42,11 +42,11 @@ const postSchema = new mongoose.Schema(
       default: 0,
     },
     comments: [
-      new mongoose.Schema({
+      {
         userName: String,
         userPhoto: String,
         message : String
-      })
+      }
     ]
   },
   {

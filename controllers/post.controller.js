@@ -1,19 +1,18 @@
 const Post = require("../models/post.model"); // model Post
 const User = require("../models/user.model");
+const Comment = require("../models/comment.model")
 const { successHandler, errorHandler } =require('../server/handle')
 // create and save a new post
 exports.create = async (req, res) => {
   try {
+    const { userId, content, image, likes ,tags} = req.body;
     let dataPost = {
-      user: req.body.user,
-      userName: req.body.userName,
-      userPhoto: req.body.userPhoto,
-      tags: req.body.tags,
+      user: userId,
+      tags,
       type: req.body.type || "person",
-      image: req.body.image,
-      content: req.body.content,
-      likes: req.body.likes,
-      comments: req.body.comments,
+      image,
+      content,
+      likes,
     };
     if(!dataPost.content){
       errorHandler(res,"內容不能為空")
@@ -29,8 +28,17 @@ exports.create = async (req, res) => {
 
 // retrieve all posts from db
 exports.findAll = async(req, res) => {
-  const allPost = await Post.find()
-  successHandler(res,'success',allPost)
+  try {
+    const allPost = await Post.find().populate({path:'user',select: 'userName avatar'})
+    if (allPost) {
+      successHandler(res,'success',allPost)
+    } else {
+      errorHandler(res, error)
+    }
+  } catch (error) {
+    errorHandler(res, error)
+  }
+ 
 };
 
 // find a single post by id
@@ -42,7 +50,7 @@ exports.findOne = async(req, res) => {
       errorHandler(res,"無此ID")
     }else{
       successHandler(res,'success',postItem)
-    }
+    } 
   } catch (error) {
     errorHandler(res,"無此ID")
   }
@@ -121,17 +129,16 @@ exports.updateComment = async(req,res)=>{
   try {
     const {postId,userId,comment} = req.body
     const data ={postId,userId,comment}
-    // 差 userModel 取得 留言者 userName userPhoto
-    const postDataComments = {userName:'sss234',userPhoto:'sssaas',message:data.comment}
-  
+    const userInfo = await User.find({_id:userId})
+    // const postDataComments = {userName:'sss234',userPhoto:'sssaas',message:data.comment}
+    const postDataComments = {userName:userInfo[0].userName,userPhoto:userInfo[0].avatar,message:comment}
     const postItem= await Post.findOneAndUpdate({_id:postId},{ $push: { comments: postDataComments  } });
-    console.log(postItem)
 
     if(!data.comment){
       errorHandler(res,"內容不能為空")
     }else{
       
-      res.status(200).send({ status: "success",postItem });
+      res.status(200).send({ status: "success",postItem  });
     }
   } catch (error) {
     errorHandler(res,error)
