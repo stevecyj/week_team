@@ -51,6 +51,8 @@ const users = {
       errorHandle(res, err);
     }
   },
+
+  // user, register
   async signUp(req, res, next) {
     let { email, password, confirmPassword, userName } = req.body;
     // 內容不可為空
