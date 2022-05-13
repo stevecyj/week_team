@@ -15,11 +15,11 @@ exports.create = async (req, res) => {
       likes,
     };
     if (!dataPost.content) {
-      errorHandler(res, "內容不能為空");
+      errorHandler(res, '內容不能為空');
     } else {
       const newPost = await Post.create(dataPost);
       let payload = { postId: newPost._id };
-      successHandler(res, "success", payload);
+      successHandler(res, 'success', payload);
     }
   } catch (error) {
     errorHandler(res, error);
@@ -60,7 +60,7 @@ exports.findOne = async (req, res) => {
       successHandler(res,'success',postItem)
     } 
   } catch (error) {
-    errorHandler(res, "無此ID");
+    errorHandler(res, '無此ID');
   }
 };
 
@@ -74,7 +74,7 @@ exports.search = async (req, res) => {
   try {
     let { keyword, sortby, limit = 10, page = 1, userId, authorId } = req.body;
     let filter = keyword ? { content: new RegExp(`${keyword}`) } : {};
-    let sort = sortby === "datetime_pub" ? { createAt: -1 } : {};
+    let sort = sortby === 'datetime_pub' ? { createAt: -1 } : {};
     if (page < 0) {
       page = 1;
     }
@@ -121,14 +121,10 @@ exports.search = async (req, res) => {
     }
 
     const count = await Post.find(filter).count();
-    const posts = await Post.find(filter)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit)
-      .populate({
-        path: "user",
-        select: "userName avatar",
-      });
+    const posts = await Post.find(filter).sort(sort).skip(skip).limit(limit).populate({
+      path: 'user',
+      select: 'userName avatar',
+    });
     // console.log(posts);
     let resPosts = posts.map((item) => {
       return {
@@ -140,9 +136,9 @@ exports.search = async (req, res) => {
       };
     });
     let payload = { count, limit, page, posts: resPosts };
-    res.status(200).send({ status: "success", payload });
+    res.status(200).send({ status: 'success', payload });
   } catch (error) {
-    errorHandler(res, "error");
+    errorHandler(res, 'error');
   }
 };
 
@@ -172,18 +168,18 @@ exports.update = async (req, res) => {
     const { userName, content, image, likes } = req.body;
     const data = { userName, content, image, likes };
     if (!data.content) {
-      errorHandler(res, "內容不能為空");
+      errorHandler(res, '內容不能為空');
     } else {
       const editPost = await Post.findByIdAndUpdate(req.params.id, data);
       console.log(editPost);
       if (!editPost) {
-        errorHandler(res, "查無此ID，無法更新");
+        errorHandler(res, '查無此ID，無法更新');
       } else {
-        successHandler(res, "success", editPost);
+        successHandler(res, 'success', editPost);
       }
     }
   } catch (error) {
-    errorHandler(res, "查無此ID，無法更新");
+    errorHandler(res, '查無此ID，無法更新');
   }
 };
 
@@ -239,9 +235,9 @@ exports.delete = async (req, res) => {
     const postId = req.params.id;
     const deletePost = await Post.findByIdAndDelete(postId);
     if (!deletePost) {
-      errorHandler(res, "刪除失敗，無此ID");
+      errorHandler(res, '刪除失敗，無此ID');
     } else {
-      successHandler(res, "刪除成功");
+      successHandler(res, '刪除成功');
     }
   } catch (error) {
     errorHandler(res, error);
@@ -251,7 +247,7 @@ exports.delete = async (req, res) => {
 // delete all posts
 exports.deleteAll = async (req, res) => {
   await Post.deleteMany({});
-  successHandler(res, "全部資料已刪除");
+  successHandler(res, '全部資料已刪除');
 };
 
 // find all published posts
