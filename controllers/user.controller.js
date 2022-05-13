@@ -1,13 +1,8 @@
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const User = require("../models/user.model");
-const {
-  successHandle,
-  errorHandle,
-  appError,
-  handleErrorAsync,
-  generateSendJWT,
-} = require("../service");
+const { successHandle, errorHandle, generateSendJWT } = require("../service");
+const { appError } = require("../exceptions");
 
 const users = {
   async getUsers(req, res) {
@@ -66,6 +61,10 @@ const users = {
     // 密碼 8 碼以上
     if (!validator.isLength(password, { min: 8 })) {
       return next(appError("400", "密碼字數低於 8 碼", next));
+    }
+    // 暱稱 2 個字以上
+    if (!validator.isLength(userName, { min: 2 })) {
+      return next(appError("400", "暱稱字數低於 2 碼", next));
     }
     // 是否為 Email
     if (!validator.isEmail(email)) {

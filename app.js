@@ -12,7 +12,7 @@ const {
   unhandledRejection,
   errorResponder,
   error404,
-} = require("./errorHandle");
+} = require("./exceptions");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");

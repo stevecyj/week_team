@@ -15,22 +15,6 @@ const successHandle = (res, data) => {
   });
   res.end();
 };
-const appError = (httpStatus, errMessage, next) => {
-  const error = new Error(errMessage);
-  error.statusCode = httpStatus;
-  error.isOperational = true;
-  next(error);
-};
-const handleErrorAsync = function handleErrorAsync(func) {
-  // func 先將 async fun 帶入參數儲存
-  // middleware 先接住 router 資料
-  return function (req, res, next) {
-    //再執行函式，async 可再用 catch 統一捕捉
-    func(req, res, next).catch(function (error) {
-      return next(error);
-    });
-  };
-};
 const generateSendJWT = (user, statusCode, res) => {
   // 產生 JWT token
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
@@ -74,8 +58,6 @@ const resErrorDev = (err, res) => {
 module.exports = {
   errorHandle,
   successHandle,
-  appError,
-  handleErrorAsync,
   generateSendJWT,
   resErrorProd,
   resErrorDev,
