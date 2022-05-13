@@ -58,7 +58,7 @@ const users = {
     if (password !== confirmPassword) {
       return next(appError("400", "密碼不一致！", next));
     }
-    // 密碼 8 碼以上
+    // 密碼 8 碼以上，16 碼以下
     let reg = new RegExp(
       /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,16}$/,
       "g"
