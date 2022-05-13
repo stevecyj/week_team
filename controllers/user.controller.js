@@ -59,8 +59,12 @@ const users = {
       return next(appError("400", "密碼不一致！", next));
     }
     // 密碼 8 碼以上
-    if (!validator.isLength(password, { min: 8 })) {
-      return next(appError("400", "密碼字數低於 8 碼", next));
+    let reg = new RegExp(
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,16}$/,
+      "g"
+    );
+    if (password.match(reg) === null) {
+      return next(appError("400", "請確認密碼格式符合條件", next));
     }
     // 暱稱 2 個字以上
     if (!validator.isLength(userName, { min: 2 })) {
