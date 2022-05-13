@@ -25,7 +25,7 @@ const generateSendJWT = (user, statusCode, res) => {
     status: "success",
     user: {
       token,
-      name: user.name,
+      name: user.userName,
     },
   });
 };

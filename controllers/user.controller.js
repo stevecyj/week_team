@@ -76,7 +76,7 @@ const users = {
     }
 
     // 加密密碼
-    password = await bcrypt.hash(req.body.password, 12);
+    password = await bcrypt.hash(password, 12);
     const newUser = await User.create({
       email,
       password,
