@@ -64,6 +64,11 @@ exports.findOne = async (req, res) => {
   }
 };
 
+// test post, req body
+exports.testPost = async (req, res) => {
+  console.log(req.body);
+};
+
 // search posts by keyword
 exports.search = async (req, res) => {
   try {
