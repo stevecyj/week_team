@@ -56,10 +56,10 @@ exports.signUp = async (req, res, next) => {
   if (password !== confirmPassword) {
     return next(appError('400', '密碼不一致！', next));
   }
-  // 密碼 8 碼以上，16 碼以下
+  // 密碼 8 碼以上，16 碼以下，英大小寫+數+8碼+ exclued 特殊符號
   let reg = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,16}$/, 'g');
   if (password.match(reg) === null) {
-    return next(appError('400', '請確認密碼格式符合條件', next));
+    return next(appError('400', '請確認密碼格式符合格式', next));
   }
   // 暱稱 2 個字以上
   if (!validator.isLength(userName, { min: 2 })) {
@@ -80,4 +80,15 @@ exports.signUp = async (req, res, next) => {
   generateSendJWT(newUser, 201, res);
 };
 // user, sing in
-exports.signIn = async (req, res, next) => {};
+exports.signIn = async (req, res, next) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return next(appError(400, '帳號密碼不可為空', next));
+  }
+  const user = await User.findOne({ email }).select('+password');
+  const auth = await bcrypt.compare(password, user.password);
+  if (!auth) {
+    return next(appError(400, '您的密碼不正確', next));
+  }
+  generateSendJWT(user, 200, res);
+};

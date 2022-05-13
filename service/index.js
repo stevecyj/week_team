@@ -1,7 +1,7 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 const errorHandle = (res, err) => {
-  const errMsg = err ? err.message : "欄位未填寫正確，或無此 id";
+  const errMsg = err ? err.message : '欄位未填寫正確，或無此 id';
   res.status(400).send({
     status: false,
     message: errMsg,
@@ -20,9 +20,10 @@ const generateSendJWT = (user, statusCode, res) => {
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_DAY,
   });
+  // hide passwd
   user.password = undefined;
   res.status(statusCode).json({
-    status: "success",
+    status: 'success',
     user: {
       token,
       name: user.userName,
@@ -38,11 +39,11 @@ const resErrorProd = (err, res) => {
     });
   } else {
     // log 紀錄
-    console.error("出現重大錯誤", err);
+    console.error('出現重大錯誤', err);
     // 送出罐頭預設訊息
     res.status(500).json({
-      status: "error",
-      message: "系統錯誤，請恰系統管理員",
+      status: 'error',
+      message: '系統錯誤，請恰系統管理員',
     });
   }
 };
