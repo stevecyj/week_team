@@ -10,6 +10,7 @@ router.post('/updatePassword', isAuth, handleErrorAsync(usersController.updatePa
 
 router.get('/getAllUsers', usersController.getUsers);
 router.post('/addUser', usersController.createUser);
+router.patch('/updateProfile/:id', usersController.updateProfile);
 router.patch('/resetPassword/:id', usersController.resetUserPassword);
 
 module.exports = router;
