@@ -2,7 +2,6 @@ var express = require("express");
 var router = express.Router();
 const postsController = require("../controllers/post.controller");
 
-
 // create and save a new post
 router.post("/addPost", postsController.create);
 
@@ -12,10 +11,13 @@ router.get("/getAllPosts", postsController.findAll);
 // find a single post by id
 router.get("/getOnePost/:id", postsController.findOne);
 
+// test post, get req body
+router.post("/testPost", postsController.testPost);
+
 // search posts by keyword
 router.post("/search", postsController.search);
 
-// updateComment 
+// updateComment
 router.post("/updateComment", postsController.updateComment);
 
 // update a post by id

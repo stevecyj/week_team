@@ -6,11 +6,22 @@ var logger = require("morgan");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
+// const { resErrorProd, resErrorDev } = require("./service");
+const {
+  uncaughtException,
+  unhandledRejection,
+  errorResponder,
+  error404,
+} = require("./exceptions");
+
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var postsRouter = require("./routes/posts");
 
 var app = express();
+
+// 程式出現重大錯誤時
+process.on("uncaughtException", uncaughtException);
 
 require("./connections");
 
@@ -32,19 +43,11 @@ app.use("/users", usersRouter);
 app.use("/posts", postsRouter);
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
+app.use(error404);
 
 // error handler
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+app.use(errorResponder);
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
-});
-
+// 未捕捉到的 catch
+process.on("unhandledRejection", unhandledRejection);
 module.exports = app;
