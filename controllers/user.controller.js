@@ -96,10 +96,17 @@ exports.signIn = async (req, res, next) => {
 };
 // user, get profile
 exports.getProfile = async (req, res, next) => {
-  res.status(200).json({
-    status: 'success',
-    user: req.user,
-  });
+  try {
+    const userId = req.params.id
+    const userItem = await User.find({_id:userId})
+    if(!Object.keys(userItem).length){
+      errorHandle(res, '查無此ID');
+    }else{
+      successHandle(res,userItem)
+    } 
+  } catch (error) {
+    errorHandle(res, error);
+  }
 };
 // user, update password
 exports.updatePassword = async (req, res, next) => {
