@@ -151,7 +151,7 @@ exports.updateProfile = async (req, res, next) => {
     }
   }
 
-  const newUserInfo = await User.findByIdAndUpdate({_id: req.user.id}, filterObj);
+  const newUserInfo = await User.updateOne({_id: req.user.id}, filterObj);
 
   successHandle(res, 'success', newUserInfo);
 };
