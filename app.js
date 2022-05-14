@@ -17,6 +17,7 @@ const {
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var postsRouter = require("./routes/posts");
+var filesRouter = require("./routes/files")
 
 var app = express();
 
@@ -37,10 +38,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(express.static('uploads'))
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/posts", postsRouter);
+app.use("/files",filesRouter)
 
 // catch 404 and forward to error handler
 app.use(error404);
