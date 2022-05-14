@@ -13,5 +13,7 @@ router.get('/getAllUsers', usersController.getUsers);
 router.post('/addUser', usersController.createUser);
 router.patch('/updateProfile', isAuth, handleErrorAsync(usersController.updateProfile));
 router.patch('/resetPassword/:id', usersController.resetUserPassword);
+router.post('/getFollowrs', usersController.getUserFollowers)
+router.post('/follow',usersController.follow)
 
 module.exports = router;

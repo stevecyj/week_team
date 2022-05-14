@@ -162,3 +162,45 @@ exports.updateProfile = async (req, res, next) => {
 
   successHandle(res, 'success', newUserInfo);
 };
+
+//列出使用者所有追蹤的人
+exports.getUserFollowers = async (req, res) => {
+  try{
+    const {body}= req;
+    const id = body._id
+    const followrs = await User.findById(id)
+    successHandle(res,followrs.follow)
+  }catch(err){
+    errorHandle(res,err)
+  }
+}
+
+//追蹤功能
+exports.follow = async(req, res) => {
+  try{
+    const {body}= req;
+    const id = body._id //使用者本人
+    const userId = body.userId //欲追蹤的人
+    const followrs = await User.findById(id)
+    const check = followrs.follow.find(item=>{
+      return item.id === userId;
+    })
+    if(check === undefined){
+      await User.findByIdAndUpdate(id,{
+        $push:{ follow:{id:userId} }
+      })
+      await User.findByIdAndUpdate(userId,{
+        $push:{ beFollowed:{id:id} }
+      })
+      const user = await User.findById(userId)
+      const beFollowers = user.beFollowed.length
+      successHandle(res,`追蹤成功，user: ${userId} 被追蹤人數 ${beFollowers} 人`)
+    }else{
+      const user = await User.findById(userId)
+      const beFollowers = user.beFollowed.length
+      successHandle(res,`已追蹤，user: ${userId} 被追蹤人數 ${beFollowers} 人`)
+    }
+  }catch(err){
+    errorHandle(res,err)
+  }
+}
