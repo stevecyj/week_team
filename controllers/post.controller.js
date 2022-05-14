@@ -30,8 +30,16 @@ exports.create = async (req, res) => {
 exports.findAll = async(req, res) => {
   try {
     const allPost = await Post.find().populate({path:'user',select: 'userName avatar'})
+    // 將 like 轉為 轉為數字後傳出 
+    const modifyPostLike = allPost.reduce((prev, next) => {
+      const newItem = {...next._doc}
+      newItem.likes = newItem.likes.length
+      prev.push(newItem)
+      return prev
+    },[])
+    
     if (allPost) {
-      successHandler(res,'success',allPost)
+      successHandler(res,'success',modifyPostLike)
     } else {
       errorHandler(res, error)
     }
@@ -166,6 +174,52 @@ exports.update = async(req, res) => {
 
   }
 };
+
+exports.updateLike = async(req, res) => {
+  try {
+    const { userId, postId } = req.body
+    // 是否存在 post , user id 
+    const user = await User.findOne({_id: userId})
+    const post = await Post.findOne({_id: postId})
+    
+    if(user !== null && post !== null){
+        // 行為 
+        const checkUserIdInPost = user.likeList.find( item => item === postId)
+        const checkPostIdInUser = post.likes.find(item => item === userId)
+        // 按讚存在 移除
+        if(checkUserIdInPost && checkPostIdInUser){
+          const user = await User.findByIdAndUpdate({_id: userId},
+            {$pull:{likeList: postId}},
+            {new: true})
+          const post = await Post.findByIdAndUpdate({_id: postId},
+            {$pull:{likes: userId}},
+            {new: true})
+            successHandler(res, {user, post})
+        // 按讚不存在 寫入
+        }else if(checkUserIdInPost === undefined && checkPostIdInUser === undefined){
+            const user = await User.findByIdAndUpdate({_id: userId},
+              {$push:{likeList: postId}},
+              {new: true})
+            const post = await Post.findByIdAndUpdate({_id: postId},
+              {$push:{likes: userId}},
+              {new: true})
+            successHandler(res, {user, post})
+        // 其他資料不對其問題
+        }else{
+            errorHandler(res, {
+                message: 'post id 或  user id 有誤'
+            })
+        }
+    }else{
+        errorHandler(res, {
+            message: 'post id 或  user id 有誤'
+        })
+    }
+  } catch (error) {
+      errorHandler(res, error)
+  }
+
+}
 
 // delete a post by id
 exports.delete = async(req, res) => {

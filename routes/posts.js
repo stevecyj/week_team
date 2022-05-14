@@ -21,6 +21,9 @@ router.post("/updateComment", postsController.updateComment);
 // update a post by id
 router.patch("/updatePost/:id", postsController.update);
 
+// update a like by post id and user id 
+router.patch("/updateLike/", postsController.updateLike);
+
 // delete a post by id
 router.delete("/deletePost/:id", postsController.delete);
 

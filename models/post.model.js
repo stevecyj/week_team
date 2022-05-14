@@ -38,8 +38,8 @@ const postSchema = new mongoose.Schema(
       required: [true, "Content 未填寫"],
     },
     likes: {
-      type: Number,
-      default: 0,
+      type: [String],
+      default: []
     },
     comments: [
       {
