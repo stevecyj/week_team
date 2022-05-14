@@ -86,6 +86,7 @@ exports.signIn = async (req, res, next) => {
     return next(appError(400, '帳號密碼不可為空', next));
   }
   const user = await User.findOne({ email }).select('+password');
+  // console.log(password, user.password);
   const auth = await bcrypt.compare(password, user.password);
   if (!auth) {
     return next(appError(400, '您的密碼不正確', next));
@@ -98,4 +99,30 @@ exports.getProfile = async (req, res, next) => {
     status: 'success',
     user: req.user,
   });
+};
+// user, update password
+exports.updatePassword = async (req, res, next) => {
+  const { password, confirmPassword } = req.body;
+  if (password !== confirmPassword) {
+    return next(appError('400', '密碼不一致！', next));
+  }
+  // 密碼 8 碼以上，16 碼以下，英大小寫+數+8碼+ exclued 特殊符號
+  let reg = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,16}$/, 'g');
+  if (password.match(reg) === null) {
+    return next(appError('400', '請確認密碼格式符合格式', next));
+  }
+
+  // check new password is same as old password
+  newPassword = await bcrypt.hash(password, 12);
+  const currentUser = await User.findById(req.user.id).select('+password');
+  const equal = await bcrypt.compare(password, currentUser.password);
+  console.log(equal);
+  if (equal) {
+    return next(appError('400', '請輸入新密碼', next));
+  }
+
+  const user = await User.findByIdAndUpdate(req.user.id, {
+    password: newPassword,
+  });
+  generateSendJWT(user, 200, res);
 };
