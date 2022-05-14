@@ -129,34 +129,29 @@ exports.updatePassword = async (req, res, next) => {
 };
 // user, update profile
 exports.updateProfile = async (req, res, next) => {
-  try {
-    const dataTypes = ['string'];
-    const genderTypes = ['female', 'male', 'notAccess'];
-    const { id } = req.params;
-    const data = { userName = null, avatar = null, gender = null } = req.body;
-    const filterObj = filterParams(data);
+  const dataTypes = ['string'];
+  const genderTypes = ['female', 'male', 'notAccess'];
+  const data = { userName = null, avatar = null, gender = null } = req.body;
+  const filterObj = filterParams(data);
 
-    // no data
-    if (Object.keys(filterObj).length <= 0) {
-      return next(appError('400', '沒有傳送任何參數資料，無法更新', next));
-    }
-
-    for (const key in filterObj) {
-      // check type
-      if (!dataTypes.includes(typeof filterObj[key])) {
-        return next(appError('400', `${key} 資料格式錯誤，目前為：${typeof filterObj[key]}，請為字串`, next));
-      }
-
-      // check enum
-      if (key === 'gender' && !genderTypes.includes(filterObj[key])) {
-        return next(appError('400', `性別資料格式錯誤，目前為：${filterObj[key]}，請為：'female', 'male', 'notAccess'`, next))
-      }
-    }
-
-    const newUserInfo = await User.findByIdAndUpdate({_id: id}, filterObj);
-
-    successHandle(res, 'success', newUserInfo);
-  } catch (error) {
-    errorHandle(res, error);
+  // no data
+  if (Object.keys(filterObj).length <= 0) {
+    return next(appError('400', '沒有傳送任何參數資料，無法更新', next));
   }
+
+  for (const key in filterObj) {
+    // check type
+    if (!dataTypes.includes(typeof filterObj[key])) {
+      return next(appError('400', `${key} 資料格式錯誤，目前為：${typeof filterObj[key]}，請為字串`, next));
+    }
+
+    // check enum
+    if (key === 'gender' && !genderTypes.includes(filterObj[key])) {
+      return next(appError('400', `性別資料格式錯誤，目前為：${filterObj[key]}，請為：'female', 'male', 'notAccess'`, next))
+    }
+  }
+
+  const newUserInfo = await User.findByIdAndUpdate({_id: req.user.id}, filterObj);
+
+  successHandle(res, 'success', newUserInfo);
 };
