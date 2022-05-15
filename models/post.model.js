@@ -1,14 +1,6 @@
 const mongoose = require("mongoose");
 const postSchema = new mongoose.Schema(
   {
-    userName: {
-      type: String,
-      required: [true, "貼文姓名未填寫"],
-    },
-    userPhoto: {
-      type: String,
-      required: [true, "貼文照片未上傳"],
-    },
     user: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
