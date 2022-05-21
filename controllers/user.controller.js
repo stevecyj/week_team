@@ -324,7 +324,7 @@ exports.getUserFollowers = (req, res, next) => {
         description: '',
         required: true,
         schema: {
-          $_id: '628897f1c31436e77ba6a8c1',
+          $userId: '628897f1c31436e77ba6a8c1',
         }
       }
       #swagger.responses[200] = {
@@ -342,7 +342,7 @@ exports.getUserFollowers = (req, res, next) => {
       }
     */
     const {body}= req;
-    const id = body._id
+    const id = body.userId
     const followrs = await User.findById(id)
     console.log(followrs)
     successHandle(res,followrs.follow)
@@ -361,8 +361,8 @@ exports.follow = (req, res, next) => {
         description: '',
         required: true,
         schema: {
-          $_id: '628897f1c31436e77ba6a8c1',
-          $userId: '62811968820c4588fef6e57a'
+          $userId: '628897f1c31436e77ba6a8c1',
+          $followId: '62811968820c4588fef6e57a'
         }
       }
       #swagger.responses[200] = {
@@ -374,26 +374,26 @@ exports.follow = (req, res, next) => {
       }
     */
     const {body}= req;
-    const id = body._id //使用者本人
-    const userId = body.userId //欲追蹤的人
+    const id = body.userId //使用者本人
+    const followId = body.followId //欲追蹤的人
     const followrs = await User.findById(id)
     const check = followrs.follow.find(item=>{
-      return item.id === userId;
+      return item.id === followId;
     })
     if(check === undefined){
       await User.findByIdAndUpdate(id,{
-        $push:{ follow:{id:userId} }
+        $push:{ follow:{id:followId} }
       })
-      await User.findByIdAndUpdate(userId,{
+      await User.findByIdAndUpdate(followId,{
         $push:{ beFollowed:{id:id} }
       })
-      const user = await User.findById(userId)
+      const user = await User.findById(followId)
       const beFollowers = user.beFollowed.length
-      successHandle(res,`追蹤成功，user: ${userId} 被追蹤人數 ${beFollowers} 人`)
+      successHandle(res,`追蹤成功，user: ${followId} 被追蹤人數 ${beFollowers} 人`)
     }else{
-      const user = await User.findById(userId)
+      const user = await User.findById(followId)
       const beFollowers = user.beFollowed.length
-      successHandle(res,`已追蹤，user: ${userId} 被追蹤人數 ${beFollowers} 人`)
+      successHandle(res,`已追蹤，user: ${followId} 被追蹤人數 ${beFollowers} 人`)
     }
   })(req, res, next)
 }

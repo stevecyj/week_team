@@ -374,7 +374,7 @@
         ]
       }
     },
-    "/users/getFollowrs": {
+    "/users/getFollowers": {
       "post": {
         "tags": [
           "Users - 使用者"
@@ -389,13 +389,13 @@
             "schema": {
               "type": "object",
               "properties": {
-                "_id": {
+                "userId": {
                   "type": "string",
                   "example": "628897f1c31436e77ba6a8c1"
                 }
               },
               "required": [
-                "_id"
+                "userId"
               ]
             },
             "type": "string"
@@ -460,18 +460,18 @@
             "schema": {
               "type": "object",
               "properties": {
-                "_id": {
+                "userId": {
                   "type": "string",
                   "example": "628897f1c31436e77ba6a8c1"
                 },
-                "userId": {
+                "followId": {
                   "type": "string",
                   "example": "62811968820c4588fef6e57a"
                 }
               },
               "required": [
-                "_id",
-                "userId"
+                "userId",
+                "followId"
               ]
             },
             "type": "string"
