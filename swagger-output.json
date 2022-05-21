@@ -580,7 +580,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/posts/search": {
@@ -593,8 +598,7 @@
           {
             "name": "body",
             "in": "body",
-            "description": "keyword: 搜尋關鍵字，空值為全部搜尋,\n sortby: 只提供最新貼文時間排序,\n limit: 每頁幾筆,\n page: 第幾頁開始,\n userId: 填入登入使用者，會搜尋使用者與使用者追蹤者貼文,\n authorId: 搜尋特定使用者所有發文，此欄如有填，則userId欄位無作用",
-            "required": true,
+            "description": "keyword: 搜尋關鍵字，空值為全部搜尋,\n sortby: 只提供最新貼文時間排序,\n limit: 每頁幾筆,\n page: 第幾頁開始,\n userId: 填入登入使用者，會搜尋使用者與使用者追蹤者貼文,\n authorId: 搜尋特定使用者所有發文，此欄如有填，則userId欄位無作用\n 不填keyword, userId, authorId可以搜尋全部文章/n userId和authorId二選一填，userId用在個人動態牆，authorId用在特定使用者所有發文",
             "schema": {
               "type": "object",
               "properties": {
@@ -701,7 +705,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/posts/updateComment": {
@@ -800,7 +809,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
     "/posts/updateLike/": {
@@ -992,7 +1006,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     }
   },
