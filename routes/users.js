@@ -1,19 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const usersController = require('../controllers/user.controller');
-const { handleErrorAsync, isAuth } = require('../middleware');
+const { isAuth } = require('../middleware');
 
-router.post('/sign_up', handleErrorAsync(usersController.signUp)); // 使用者註冊
-router.post('/sign_in', handleErrorAsync(usersController.signIn)); // 使用者登入
-router.get('/profile/:id', isAuth, handleErrorAsync(usersController.getProfile)); // 使用者資料
-
-router.post('/updatePassword', isAuth, handleErrorAsync(usersController.updatePassword)); // 修改密碼
-
-router.get('/getAllUsers', usersController.getUsers);
-router.post('/addUser', usersController.createUser);
-router.patch('/updateProfile', isAuth, handleErrorAsync(usersController.updateProfile));
-router.patch('/resetPassword/:id', usersController.resetUserPassword);
-router.post('/getFollowrs', usersController.getUserFollowers)
-router.post('/follow',usersController.follow)
+router.post('/sign_up', usersController.signUp); // 使用者註冊
+router.post('/sign_in', usersController.signIn); // 使用者登入
+router.get('/profile/:id', isAuth, usersController.getProfile); // 使用者資料
+router.post('/updatePassword', isAuth, usersController.updatePassword); // 修改密碼
+router.patch('/updateProfile', isAuth, usersController.updateProfile);
+router.post('/getFollowers', isAuth, usersController.getUserFollowers)
+router.post('/follow', isAuth, usersController.follow)
+// router.get('/getAllUsers', usersController.getUsers);
+// router.post('/addUser', usersController.createUser);
+// router.patch('/resetPassword/:id', usersController.resetUserPassword);
 
 module.exports = router;

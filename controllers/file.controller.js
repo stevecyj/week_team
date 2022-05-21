@@ -6,10 +6,20 @@ const { options } = require('../routes/users');
 
 
 exports.show = async(req,res)=>{
+  /*
+    #swagger.tags = ['Files - 圖片上傳']
+    #swagger.description = '取得圖片 API'
+    #swagger.ignore = true
+  */
   res.send(allImage);
 }
 
 exports.uploadImage = async (req,res)=>{
+  /*
+    #swagger.tags = ['Files - 圖片上傳']
+    #swagger.description = '上傳圖片取得圖片網址 API'
+    #swagger.ignore = true
+  */
     const encode_image = req.file.buffer.toString('base64')
     var imgData = {}
     let options = {

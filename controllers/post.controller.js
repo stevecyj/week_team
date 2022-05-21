@@ -4,6 +4,32 @@ const Comment = require("../models/comment.model")
 const { successHandler, errorHandler } =require('../server/handle')
 // create and save a new post
 exports.create = async (req, res) => {
+  /* 
+    #swagger.tags = ['Posts - 貼文']
+    #swagger.description = '新增貼文 API'
+    #swagger.parameters['body'] = {
+      in: 'body',
+      description: '',
+      required: true,
+      schema: {
+        $userId: '62749b880b0c853f222d8696',
+        $tags: '[test]',
+        $type: 'person',
+        $content: '測試發文',
+        image: 'https://i.picsum.photos/id/817/200/300.jpg?hmac=Egrlh6ZzXMOSu9esbUDMY8PhK3cBCmeqHyWBXm7dnHQ',
+      }
+    }
+    #swagger.responses[200] = {
+      description: '',
+      schema: {
+        status: 'success',
+        message: 'success',
+        data: {
+            postId: '62886e5e526a5458bac3efd6'
+        }
+      }
+    }
+  */
   try {
     const { userId, content, image, likes ,tags} = req.body;
     let dataPost = {
@@ -26,8 +52,15 @@ exports.create = async (req, res) => {
   }
 };
 
+
+// --- 未用到API (後續待刪)--- start
 // retrieve all posts from db
 exports.findAll = async(req, res) => {
+  /*
+    #swagger.tags = ['Posts - 貼文']
+    #swagger.description = '取得所有貼文 API'
+    #swagger.ignore = true
+  */
   try {
     const allPost = await Post.find().populate({path:'user',select: 'userName avatar'})
     // 將 like 轉為 轉為數字後傳出 
@@ -51,6 +84,11 @@ exports.findAll = async(req, res) => {
 
 // find a single post by id
 exports.findOne = async (req, res) => {
+  /*
+    #swagger.tags = ['Posts - 貼文']
+    #swagger.description = '取得單一貼文 API'
+    #swagger.ignore = true
+  */
   try {
     const postId = req.params.id
     const postItem = await Post.find({_id:postId})
@@ -66,11 +104,57 @@ exports.findOne = async (req, res) => {
 
 // test post, req body
 exports.testPost = async (req, res) => {
+  /*
+    #swagger.tags = ['Posts - 貼文']
+    #swagger.ignore = true
+  */
   console.log(req.body);
 };
+// --- 未用到API --- end
 
 // search posts by keyword
 exports.search = async (req, res) => {
+  /*
+    #swagger.tags = ['Posts - 貼文']
+    #swagger.description = '搜尋貼文 API'
+    #swagger.parameters['body'] = {
+      in: 'body',
+      description: 'keyword: 搜尋關鍵字，空值為全部搜尋,\n sortby: 只提供最新貼文時間排序,\n  limit: 每頁幾筆,\n page: 第幾頁開始,\n userId: 填入登入使用者，會搜尋使用者與使用者追蹤者貼文,\n authorId: 搜尋特定使用者所有發文，此欄如有填，則userId欄位無作用',
+      required: true,
+      schema: {
+        keyword: "", 
+        sortby: "datetime_pub",  
+        limit: 10,
+        page: 1,
+        userId: "62741e710b0c853f222d8691",
+        authorId: "62749ba20b0c853f222d8697"
+      }
+    }
+    #swagger.responses[200] = {
+      description: '',
+      schema: {
+        "status": "success",
+        "payload": {
+          "count": 1,
+          "limit": 10,
+          "page": 1,
+          "posts": [
+            {
+              "user": {
+                  "_id": "62741e710b0c853f222d8691",
+                  "avatar": "https://randomuser.me/api/portraits/lego/3.jpg",
+                  "userName": "DAT"
+              },
+              "postId": "627bd5634b9b3a393e5eb87c",
+              "content": "測試發文",
+              "image": "https://i.picsum.photos/id/817/200/300.jpg?hmac=Egrlh6ZzXMOSu9esbUDMY8PhK3cBCmeqHyWBXm7dnHQ",
+              "datetime_pub": "2022-05-11T15:25:23.537Z"
+            }
+          ]
+        }
+      }
+    }
+  */
   try {
     let { keyword, sortby, limit = 10, page = 1, userId, authorId } = req.body;
     let filter = keyword ? { content: new RegExp(`${keyword}`) } : {};
@@ -143,6 +227,39 @@ exports.search = async (req, res) => {
 };
 
 exports.updateComment = async (req, res) => {
+  /*
+    #swagger.tags = ['Posts - 貼文']
+    #swagger.description = '留言 API'
+    #swagger.parameters['body'] = {
+      in: 'body',
+      description: '',
+      required: true,
+      schema: {
+        $postId: "6288960ac2049c4b43b9e5d3", 
+        $userId: "62749ba20b0c853f222d8697",  
+        $comment: "測試留言",
+      }
+    }
+    #swagger.responses[200] = {
+      description: '被留言之文章原始資料',
+      schema: {
+        "status": "success",
+        "postItem": {
+          "_id": "6288960ac2049c4b43b9e5d3",
+          "user": "62749b880b0c853f222d8696",
+          "tags": [
+            "[test]"
+          ],
+          "type": "person",
+          "image": "https://i.picsum.photos/id/817/200/300.jpg?hmac=Egrlh6ZzXMOSu9esbUDMY8PhK3cBCmeqHyWBXm7dnHQ",
+          "content": "測試發文",
+          "likes": [],
+          "createAt": "2022-05-21T07:34:34.522Z",
+          "comments": []
+        }
+      }
+    }
+  */
   try {
     const {postId,userId,comment} = req.body
     const data ={postId,userId,comment}
@@ -162,28 +279,75 @@ exports.updateComment = async (req, res) => {
   }
 };
 
-// update a post by id
-exports.update = async (req, res) => {
-  try {
-    const { userName, content, image, likes } = req.body;
-    const data = { userName, content, image, likes };
-    if (!data.content) {
-      errorHandler(res, '內容不能為空');
-    } else {
-      const editPost = await Post.findByIdAndUpdate(req.params.id, data);
-      console.log(editPost);
-      if (!editPost) {
-        errorHandler(res, '查無此ID，無法更新');
-      } else {
-        successHandler(res, 'success', editPost);
+exports.updateLike = async(req, res) => {
+  /*
+    #swagger.tags = ['Posts - 貼文']
+    #swagger.description = '按讚/取消讚 API'
+    #swagger.parameters['body'] = {
+      in: 'body',
+      description: '',
+      required: true,
+      schema: {
+        $postId: "6288960ac2049c4b43b9e5d3", 
+        $userId: "62749ba20b0c853f222d8697",  
       }
     }
-  } catch (error) {
-    errorHandler(res, '查無此ID，無法更新');
-  }
-};
-
-exports.updateLike = async(req, res) => {
+    #swagger.responses[200] = {
+      description: '被留言之文章原始資料',
+      schema: {
+        "status": "success",
+        "message": {
+          "user": {
+            "gender": "notAccess",
+            "_id": "62749ba20b0c853f222d8697",
+            "avatar": "https://randomuser.me/api/portraits/lego/3.jpg",
+            "userName": "DDD",
+            "beFollowed": [
+              {
+                "id": "62741e710b0c853f222d8691",
+                "datetime_update": "2022-05-05T19:03:55.552Z"
+              }
+            ],
+            "follow": [
+              {
+                "id": "62741e710b0c853f222d8691",
+                "datetime_update": "2022-05-05T19:03:55.552Z"
+              }
+            ],
+            "likeList": [
+              "627bd5634b9b3a393e5eb87c",
+              "6288960ac2049c4b43b9e5d3"
+            ],
+            "createAt": "2022-05-21T09:49:12.543Z",
+            "updateAt": "2022-05-21T09:49:12.543Z"
+          },
+          "post": {
+            "_id": "6288960ac2049c4b43b9e5d3",
+            "user": "62749b880b0c853f222d8696",
+            "tags": [
+              "[test]"
+            ],
+            "type": "person",
+            "image": "https://i.picsum.photos/id/817/200/300.jpg?hmac=Egrlh6ZzXMOSu9esbUDMY8PhK3cBCmeqHyWBXm7dnHQ",
+            "content": "測試發文",
+            "likes": [
+              "62749ba20b0c853f222d8697"
+            ],
+            "createAt": "2022-05-21T07:34:34.522Z",
+            "comments": [
+              {
+                "userName": "DDD",
+                "userPhoto": "https://randomuser.me/api/portraits/lego/3.jpg",
+                "message": "測試留言",
+                "_id": "6288b266ea5a7a1cdc79cd04"
+              }
+            ]
+          }
+        },
+        "data": []
+      }
+    }
+  */
   try {
     const { userId, postId } = req.body
     // 是否存在 post , user id 
@@ -226,11 +390,42 @@ exports.updateLike = async(req, res) => {
   } catch (error) {
       errorHandler(res, error)
   }
-
 }
+
+// --- 未用到API (後續待刪)--- start
+// update a post by id
+exports.update = async (req, res) => {
+  /*
+    #swagger.tags = ['Posts - 貼文']
+    #swagger.description = '編輯貼文 API'
+    #swagger.ignore = true
+  */
+  try {
+    const { userName, content, image, likes } = req.body;
+    const data = { userName, content, image, likes };
+    if (!data.content) {
+      errorHandler(res, '內容不能為空');
+    } else {
+      const editPost = await Post.findByIdAndUpdate(req.params.id, data);
+      console.log(editPost);
+      if (!editPost) {
+        errorHandler(res, '查無此ID，無法更新');
+      } else {
+        successHandler(res, 'success', editPost);
+      }
+    }
+  } catch (error) {
+    errorHandler(res, '查無此ID，無法更新');
+  }
+};
 
 // delete a post by id
 exports.delete = async (req, res) => {
+  /*
+    #swagger.tags = ['Posts - 貼文']
+    #swagger.description = '刪除單一貼文 API'
+    #swagger.ignore = true
+  */
   try {
     const postId = req.params.id;
     const deletePost = await Post.findByIdAndDelete(postId);
@@ -246,9 +441,21 @@ exports.delete = async (req, res) => {
 
 // delete all posts
 exports.deleteAll = async (req, res) => {
+  /*
+    #swagger.tags = ['Posts - 貼文']
+    #swagger.description = '刪除所有貼文 API'
+    #swagger.ignore = true
+  */
   await Post.deleteMany({});
   successHandler(res, '全部資料已刪除');
 };
 
 // find all published posts
-exports.findAllPublished = (req, res) => {};
+exports.findAllPublished = (req, res) => {
+  /*
+    #swagger.tags = ['Posts - 貼文']
+    #swagger.description = '取得所有已發表貼文 API'
+    #swagger.ignore = true
+  */
+};
+// --- 未用到API --- end

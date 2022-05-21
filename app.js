@@ -6,6 +6,9 @@ var logger = require("morgan");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
+const swaggerUI = require("swagger-ui-express");
+const swaggerFile = require("./swagger-output.json");
+
 // const { resErrorProd, resErrorDev } = require("./service");
 const {
   uncaughtException,
@@ -44,6 +47,7 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/posts", postsRouter);
 app.use("/files",filesRouter)
+app.use("/api-doc", swaggerUI.serve, swaggerUI.setup(swaggerFile));
 
 // catch 404 and forward to error handler
 app.use(error404);
