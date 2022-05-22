@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "NODE_ENV=production node ./bin/www",
+    "start": "NODE_ENV=production npm run swagger\n node ./bin/www",
     "start-dev": "NODE_ENV=dev nodemon ./bin/www",
     "start-prod": "NODE_ENV=production nodemon ./bin/www",
     "swagger": "node ./swagger.js"
