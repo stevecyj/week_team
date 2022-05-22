@@ -3,7 +3,7 @@ const swaggerAutogen = require('swagger-autogen')();
 const doc = {
     info: {},
     host: process.env.NODE_ENV ===  'production' ? 'safe-brushlands-13562.herokuapp.com' : `localhost:3005`,
-    schemes: ['http', 'https'],
+    schemes: ['https'],
     securityDefinitions: {
         apiKeyAuth: {
             type: 'apiKey',
