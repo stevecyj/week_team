@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {},
-  "host": "localhost:3005",
+  "host": "safe-brushlands-13562.herokuapp.com",
   "basePath": "/",
   "tags": [],
   "schemes": [
