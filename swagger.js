@@ -12,7 +12,8 @@ const doc = {
             description: '請加入 API Token 需有前綴 Bearer '
         }
     },
-    definitions: {}
+  },
+  definitions: {},
 };
 
 const outputFile = './swagger-output.json';
