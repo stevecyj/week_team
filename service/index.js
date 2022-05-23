@@ -27,6 +27,7 @@ const generateSendJWT = (user, statusCode, res) => {
     user: {
       token,
       name: user.userName,
+      id: user._id,
     },
   });
 };
