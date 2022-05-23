@@ -369,7 +369,11 @@ exports.follow = (req, res, next) => {
         description: '',
         schema: {
           "status": true,
-          "data": "追蹤成功，user: 62811968820c4588fef6e57a 被追蹤人數 1 人"
+          "data":  {
+            "status": "追蹤成功",
+            "follow": "62811968820c4588fef6e57a",
+            "fans": 1
+          }
         }
       }
     */
@@ -389,11 +393,25 @@ exports.follow = (req, res, next) => {
       })
       const user = await User.findById(followId)
       const beFollowers = user.beFollowed.length
-      successHandle(res,`追蹤成功，user: ${followId} 被追蹤人數 ${beFollowers} 人`)
+      successHandle(res,{
+        status: "追蹤成功",
+        follow: followId,
+        fans: beFollowers
+      })
     }else{
+      await User.findByIdAndUpdate(id,{
+        $pull:{ follow:{id:followId} }
+      })
+      await User.findByIdAndUpdate(followId,{
+        $pull:{ beFollowed:{id:id} }
+      })
       const user = await User.findById(followId)
       const beFollowers = user.beFollowed.length
-      successHandle(res,`已追蹤，user: ${followId} 被追蹤人數 ${beFollowers} 人`)
+      successHandle(res,{
+        status: "退追蹤成功",
+        unfollow: followId,
+        fans: beFollowers
+      })
     }
   })(req, res, next)
 }
