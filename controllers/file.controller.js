@@ -1,46 +1,36 @@
-const { successHandler, errorHandler } =require('../server/handle')
-const Image = require('../models/image.model')
-const fs = require('fs');
-const request = require("request-promise")
-const { options } = require('../routes/users');
+const { successHandler} =require('../server/handle')
+const { handleErrorAsync } = require('../middleware');
+const { appError } = require("../exceptions");
+const { ImgurClient } = require('imgur');
 
 
-exports.show = async(req,res)=>{
-  /*
-    #swagger.tags = ['Files - 圖片上傳']
-    #swagger.description = '取得圖片 API'
-    #swagger.ignore = true
-  */
-  res.send(allImage);
-}
 
-exports.uploadImage = async (req,res)=>{
-  /*
-    #swagger.tags = ['Files - 圖片上傳']
-    #swagger.description = '上傳圖片取得圖片網址 API'
-    #swagger.ignore = true
-  */
-    const encode_image = req.file.buffer.toString('base64')
-    var imgData = {}
-    let options = {
-      'method': 'POST',
-      'url': 'https://api.imgur.com/3/image',
-      'headers': {
-          'Authorization': 'Client-ID 40c34e1b8246f71'
-      },
-      formData: {
-          'image': encode_image}
-    };
-    await request(options, function (error, response) {
-      if (error) throw new Error(error);
-      imgurRes = JSON.parse(response.body)
-      console.log(imgurRes.data.link)
-      imgData = {
-        imageName: req.file.originalname,
-        imageUrl : imgurRes.data.link
+exports.uploadImage = (req, res, next) =>{
+  handleErrorAsync (async (req,res,next)=>{
+    /*
+      #swagger.tags = ['Files - 圖片上傳']
+      #swagger.description = '上傳圖片取得圖片網址 API'
+      #swagger.ignore = true
+    */
+      if(!req.files.length){
+        return next(appError(400,"尚未選取到需上傳的照片",next))
       }
-    });
-    const newImage = await Image.create(imgData)
-    successHandler(res,'success',newImage)
-}
+      
+      // const dimensions = sizeOf(req.files[0].buffer)
+      // if(dimensions.width !== dimensions.height){
+      //   return next(appError(400,"尚未上傳檔案",next))
+      // }
+      const client = new ImgurClient({
+        clientId : process.env.IMGUR_CILENTID,
+        clientSecret : process.env.IMGUR_CILENT_SECRET,
+        refreshToken : process.env.IMGUR_REFRESH_TOKEN
+      })
+      const response = await client.upload({
+        image : req.files[0].buffer.toString('base64'),
+        type  : 'base64',
+        album : process.env.IMGUR_ALBUM_ID
+      })
+      successHandler(res,'success',{imgurl:response.data.link})
+  })(req,res,next)
+} 
 

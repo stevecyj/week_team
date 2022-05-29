@@ -487,8 +487,21 @@
                   "example": true
                 },
                 "data": {
-                  "type": "string",
-                  "example": "追蹤成功，user: 62811968820c4588fef6e57a 被追蹤人數 1 人"
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "追蹤成功"
+                    },
+                    "follow": {
+                      "type": "string",
+                      "example": "62811968820c4588fef6e57a"
+                    },
+                    "fans": {
+                      "type": "number",
+                      "example": 1
+                    }
+                  }
                 }
               },
               "xml": {

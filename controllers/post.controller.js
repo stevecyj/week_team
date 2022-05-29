@@ -1,6 +1,5 @@
 const Post = require("../models/post.model"); // model Post
 const User = require("../models/user.model");
-const Comment = require("../models/comment.model")
 const { successHandler, errorHandler } =require('../server/handle')
 const { appError } = require("../exceptions");
 const { handleErrorAsync } = require('../middleware');
