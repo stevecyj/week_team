@@ -20,6 +20,15 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+const io = app.io;
+io.listen(server, {
+  path: '/socket.io/connect',
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    credential: true,
+  }
+});
 
 /**
  * Listen on provided port, on all network interfaces.

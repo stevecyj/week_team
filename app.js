@@ -9,7 +9,6 @@ const cors = require("cors");
 const swaggerUI = require("swagger-ui-express");
 const swaggerFile = require("./swagger-output.json");
 
-// const { resErrorProd, resErrorDev } = require("./service");
 const {
   uncaughtException,
   unhandledRejection,
@@ -21,8 +20,17 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var postsRouter = require("./routes/posts");
 var filesRouter = require("./routes/files")
+var filesRouter = require("./routes/files")
 
 var app = express();
+
+// 設定 websocket
+const io = require('socket.io')();
+app.io = io;
+require('./socket/socket')(io);
+
+// websocket middleware
+app.use((req, res, next) => (res.io = io) && next());
 
 // 程式出現重大錯誤時
 process.on("uncaughtException", uncaughtException);
