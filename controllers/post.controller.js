@@ -142,20 +142,31 @@ exports.search = (req, res, next) => {
         schema: {
           "status": "success",
           "payload": {
-            "count": 1,
+            "count": 3,
             "limit": 10,
             "page": 1,
             "posts": [
               {
                 "user": {
-                    "_id": "62741e710b0c853f222d8691",
-                    "avatar": "https://randomuser.me/api/portraits/lego/3.jpg",
-                    "userName": "DAT"
+                  "_id": "62749ba20b0c853f222d8697",
+                  "avatar": "https://randomuser.me/api/portraits/lego/3.jpg",
+                  "userName": "DDD"
                 },
-                "postId": "627bd5634b9b3a393e5eb87c",
+                "postId": "627bd58d4b9b3a393e5eb884",
                 "content": "測試發文",
                 "image": "https://i.picsum.photos/id/817/200/300.jpg?hmac=Egrlh6ZzXMOSu9esbUDMY8PhK3cBCmeqHyWBXm7dnHQ",
-                "datetime_pub": "2022-05-11T15:25:23.537Z"
+                "datetime_pub": "2022-05-11T15:26:05.393Z",
+                "commets": [
+                  {
+                    "_id": "629610fb7e35a043b9cb87bf",
+                    "comment": "測試留言",
+                    "user": {
+                      "_id": "628897f1c31436e77ba6a8c1",
+                      "userName": "Jolyne"
+                    },
+                    "post": "627bd58d4b9b3a393e5eb884"
+                  }
+                ]
               }
             ]
           }
@@ -240,13 +251,16 @@ exports.addComment = (req, res, next) => {
       #swagger.tags = ['Posts - 貼文']
       #swagger.description = '留言 API'
       #swagger.security = [{ apiKeyAuth: [] }]
+      #swagger.parameters['id'] = {
+        in: 'path',
+        description: '文章ID 測試用ID 6288960ac2049c4b43b9e5d3',
+        required: true,
+      }
       #swagger.parameters['body'] = {
         in: 'body',
         description: '',
         required: true,
         schema: {
-          $postId: "6288960ac2049c4b43b9e5d3", 
-          $userId: "62749ba20b0c853f222d8697",  
           $comment: "測試留言",
         }
       }
@@ -254,18 +268,15 @@ exports.addComment = (req, res, next) => {
         description: '被留言之文章原始資料',
         schema: {
           "status": "success",
-          "postItem": {
-            "_id": "6288960ac2049c4b43b9e5d3",
-            "user": "62749b880b0c853f222d8696",
-            "tags": [
-              "[test]"
-            ],
-            "type": "person",
-            "image": "https://i.picsum.photos/id/817/200/300.jpg?hmac=Egrlh6ZzXMOSu9esbUDMY8PhK3cBCmeqHyWBXm7dnHQ",
-            "content": "測試發文",
-            "likes": [],
-            "createAt": "2022-05-21T07:34:34.522Z",
-            "comments": []
+          "message": "success",
+          "data": {
+            "comments": {
+              "comment": "測試留言",
+              "user": "628897f1c31436e77ba6a8c1",
+              "post": "6288960ac2049c4b43b9e5d3",
+              "_id": "62960e0bec13021324e61213",
+              "createdAt": "2022-05-31T12:46:03.686Z"
+            }
           }
         }
       }
@@ -293,6 +304,24 @@ exports.addComment = (req, res, next) => {
 
 exports.delComment = (req, res, next)=>{
   handleErrorAsync(async(req, res, next)=>{
+    /*
+      #swagger.tags = ['Posts - 貼文']
+      #swagger.description = '刪除留言 API'
+      #swagger.security = [{ apiKeyAuth: [] }]
+      #swagger.parameters['id'] = {
+        in: 'path',
+        description: '文章ID 測試用ID 62960ea87415f9b526ba6c7c',
+        required: true,
+      }
+      #swagger.responses[200] = {
+        description: '被留言之文章原始資料',
+        schema: {
+          "status": "success",
+          "message": "success",
+          "data": "已刪除此留言"
+        }
+      }
+    */
     const userId = req.user.id;
     const commentId = req.params.id;
     const commentInfo = await Comment.findById(commentId).exec()
@@ -310,6 +339,41 @@ exports.delComment = (req, res, next)=>{
 
 exports.updateComment = (req, res, next)=>{
   handleErrorAsync(async(req, res, next)=>{
+    /*
+      #swagger.tags = ['Posts - 貼文']
+      #swagger.description = '更新留言 API'
+      #swagger.security = [{ apiKeyAuth: [] }]
+      #swagger.parameters['id'] = {
+        in: 'path',
+        description: '文章ID 測試用ID 62960ed57415f9b526ba6c80',
+        required: true,
+      }
+      #swagger.parameters['body'] = {
+        in: 'body',
+        description: '',
+        required: true,
+        schema: {
+          $comment: "編輯留言",
+        }
+      }
+      #swagger.responses[200] = {
+        description: '被留言之文章原始資料',
+        schema: {
+          "status": "success",
+          "message": "success",
+          "data": {
+            "_id": "62960ed57415f9b526ba6c80",
+            "comment": "留言",
+            "user": {
+              "_id": "628897f1c31436e77ba6a8c1",
+              "userName": "Jolyne"
+            },
+            "post": "6288960ac2049c4b43b9e5d3",
+            "createdAt": "2022-05-31T12:49:25.687Z"
+          }
+        }
+      }
+    */
     const userId = req.user.id;
     const commentId = req.params.id;
     const {comment} = req.body
