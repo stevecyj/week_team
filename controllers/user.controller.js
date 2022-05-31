@@ -168,28 +168,27 @@ exports.getProfile = (req, res, next) => {
       #swagger.tags = ['Users - 使用者']
       #swagger.description = '取得單一使用者資料 API'
       #swagger.security = [{ apiKeyAuth: [] }]
-      #swagger.parameters['id'] = {
-        in: 'path',
-        description: '使用者ID，測試用ID 628897f1c31436e77ba6a8c1',
-        required: true,
-      }
       #swagger.responses[200] = {
         description: '',
         schema: {
           "status": true,
-          "data": [
-            {
-              "_id": "628897f1c31436e77ba6a8c1",
-              "userName": "JOJO",
-              "avatar": "https://randomuser.me/api/portraits/lego/3.jpg",
-              "gender": "notAccess",
-              "likeList": [],
-              "follow": [],
-              "beFollowed": [],
-              "createAt": "2022-05-21T07:42:41.221Z",
-              "updateAt": "2022-05-21T07:42:41.221Z"
-            }
-          ]
+          "data": {
+            "_id": "628897f1c31436e77ba6a8c1",
+            "userName": "Jolyne",
+            "avatar": "https://randomuser.me/api/portraits/lego/3.jpg",
+            "gender": "female",
+            "likeList": [],
+            "follow": [
+              {
+                "id": "62811968820c4588fef6e57a",
+                "_id": "6288ab20d536ebfaec2c5a1b",
+                "datetime_update": "2022-05-21T09:04:32.992Z"
+              }
+            ],
+            "beFollowed": [],
+            "createAt": "2022-05-21T07:42:41.221Z",
+            "updateAt": "2022-05-21T07:42:41.221Z"
+          }
         }
       }
     */

@@ -1,7 +1,7 @@
 {
   "swagger": "2.0",
   "info": {},
-  "host": "safe-brushlands-13562.herokuapp.com",
+  "host": "localhost:3005",
   "basePath": "/",
   "tags": [],
   "schemes": [
@@ -156,21 +156,13 @@
         }
       }
     },
-    "/users/profile/{id}": {
+    "/users/profile": {
       "get": {
         "tags": [
           "Users - 使用者"
         ],
         "description": "取得單一使用者資料 API",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "description": "使用者ID，測試用ID 628897f1c31436e77ba6a8c1"
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK",
@@ -182,46 +174,59 @@
                   "example": true
                 },
                 "data": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "_id": {
-                        "type": "string",
-                        "example": "628897f1c31436e77ba6a8c1"
-                      },
-                      "userName": {
-                        "type": "string",
-                        "example": "JOJO"
-                      },
-                      "avatar": {
-                        "type": "string",
-                        "example": "https://randomuser.me/api/portraits/lego/3.jpg"
-                      },
-                      "gender": {
-                        "type": "string",
-                        "example": "notAccess"
-                      },
-                      "likeList": {
-                        "type": "array",
-                        "items": {}
-                      },
-                      "follow": {
-                        "type": "array",
-                        "items": {}
-                      },
-                      "beFollowed": {
-                        "type": "array",
-                        "items": {}
-                      },
-                      "createAt": {
-                        "type": "string",
-                        "example": "2022-05-21T07:42:41.221Z"
-                      },
-                      "updateAt": {
-                        "type": "string",
-                        "example": "2022-05-21T07:42:41.221Z"
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type": "string",
+                      "example": "628897f1c31436e77ba6a8c1"
+                    },
+                    "userName": {
+                      "type": "string",
+                      "example": "Jolyne"
+                    },
+                    "avatar": {
+                      "type": "string",
+                      "example": "https://randomuser.me/api/portraits/lego/3.jpg"
+                    },
+                    "gender": {
+                      "type": "string",
+                      "example": "female"
+                    },
+                    "likeList": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "follow": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "62811968820c4588fef6e57a"
+                          },
+                          "_id": {
+                            "type": "string",
+                            "example": "6288ab20d536ebfaec2c5a1b"
+                          },
+                          "datetime_update": {
+                            "type": "string",
+                            "example": "2022-05-21T09:04:32.992Z"
+                          }
+                        }
                       }
+                    },
+                    "beFollowed": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "createAt": {
+                      "type": "string",
+                      "example": "2022-05-21T07:42:41.221Z"
+                    },
+                    "updateAt": {
+                      "type": "string",
+                      "example": "2022-05-21T07:42:41.221Z"
                     }
                   }
                 }
@@ -658,7 +663,7 @@
                   "properties": {
                     "count": {
                       "type": "number",
-                      "example": 1
+                      "example": 3
                     },
                     "limit": {
                       "type": "number",
@@ -678,7 +683,7 @@
                             "properties": {
                               "_id": {
                                 "type": "string",
-                                "example": "62741e710b0c853f222d8691"
+                                "example": "62749ba20b0c853f222d8697"
                               },
                               "avatar": {
                                 "type": "string",
@@ -686,13 +691,13 @@
                               },
                               "userName": {
                                 "type": "string",
-                                "example": "DAT"
+                                "example": "DDD"
                               }
                             }
                           },
                           "postId": {
                             "type": "string",
-                            "example": "627bd5634b9b3a393e5eb87c"
+                            "example": "627bd58d4b9b3a393e5eb884"
                           },
                           "content": {
                             "type": "string",
@@ -704,7 +709,40 @@
                           },
                           "datetime_pub": {
                             "type": "string",
-                            "example": "2022-05-11T15:25:23.537Z"
+                            "example": "2022-05-11T15:26:05.393Z"
+                          },
+                          "commets": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "_id": {
+                                  "type": "string",
+                                  "example": "629610fb7e35a043b9cb87bf"
+                                },
+                                "comment": {
+                                  "type": "string",
+                                  "example": "測試留言"
+                                },
+                                "user": {
+                                  "type": "object",
+                                  "properties": {
+                                    "_id": {
+                                      "type": "string",
+                                      "example": "628897f1c31436e77ba6a8c1"
+                                    },
+                                    "userName": {
+                                      "type": "string",
+                                      "example": "Jolyne"
+                                    }
+                                  }
+                                },
+                                "post": {
+                                  "type": "string",
+                                  "example": "627bd58d4b9b3a393e5eb884"
+                                }
+                              }
+                            }
                           }
                         }
                       }
@@ -725,13 +763,20 @@
         ]
       }
     },
-    "/posts/updateComment": {
+    "/posts/addComment/{id}": {
       "post": {
         "tags": [
           "Posts - 貼文"
         ],
         "description": "留言 API",
         "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "文章ID 測試用ID 6288960ac2049c4b43b9e5d3"
+          },
           {
             "name": "body",
             "in": "body",
@@ -740,22 +785,12 @@
             "schema": {
               "type": "object",
               "properties": {
-                "postId": {
-                  "type": "string",
-                  "example": "6288960ac2049c4b43b9e5d3"
-                },
-                "userId": {
-                  "type": "string",
-                  "example": "62749ba20b0c853f222d8697"
-                },
                 "comment": {
                   "type": "string",
                   "example": "測試留言"
                 }
               },
               "required": [
-                "postId",
-                "userId",
                 "comment"
               ]
             },
@@ -772,46 +807,180 @@
                   "type": "string",
                   "example": "success"
                 },
-                "postItem": {
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "comments": {
+                      "type": "object",
+                      "properties": {
+                        "comment": {
+                          "type": "string",
+                          "example": "測試留言"
+                        },
+                        "user": {
+                          "type": "string",
+                          "example": "628897f1c31436e77ba6a8c1"
+                        },
+                        "post": {
+                          "type": "string",
+                          "example": "6288960ac2049c4b43b9e5d3"
+                        },
+                        "_id": {
+                          "type": "string",
+                          "example": "62960e0bec13021324e61213"
+                        },
+                        "createdAt": {
+                          "type": "string",
+                          "example": "2022-05-31T12:46:03.686Z"
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/posts/deleteComment/{id}": {
+      "delete": {
+        "tags": [
+          "Posts - 貼文"
+        ],
+        "description": "刪除留言 API",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "文章ID 測試用ID 62960ea87415f9b526ba6c7c"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "被留言之文章原始資料",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "string",
+                  "example": "已刪除此留言"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/posts/updateComment/{id}": {
+      "patch": {
+        "tags": [
+          "Posts - 貼文"
+        ],
+        "description": "更新留言 API",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "文章ID 測試用ID 62960ed57415f9b526ba6c80"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "comment": {
+                  "type": "string",
+                  "example": "編輯留言"
+                }
+              },
+              "required": [
+                "comment"
+              ]
+            },
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "被留言之文章原始資料",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
                   "type": "object",
                   "properties": {
                     "_id": {
                       "type": "string",
-                      "example": "6288960ac2049c4b43b9e5d3"
+                      "example": "62960ed57415f9b526ba6c80"
+                    },
+                    "comment": {
+                      "type": "string",
+                      "example": "留言"
                     },
                     "user": {
-                      "type": "string",
-                      "example": "62749b880b0c853f222d8696"
-                    },
-                    "tags": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "example": "628897f1c31436e77ba6a8c1"
+                        },
+                        "userName": {
+                          "type": "string",
+                          "example": "Jolyne"
+                        }
                       }
                     },
-                    "type": {
+                    "post": {
                       "type": "string",
-                      "example": "person"
+                      "example": "6288960ac2049c4b43b9e5d3"
                     },
-                    "image": {
+                    "createdAt": {
                       "type": "string",
-                      "example": "https://i.picsum.photos/id/817/200/300.jpg?hmac=Egrlh6ZzXMOSu9esbUDMY8PhK3cBCmeqHyWBXm7dnHQ"
-                    },
-                    "content": {
-                      "type": "string",
-                      "example": "測試發文"
-                    },
-                    "likes": {
-                      "type": "array",
-                      "items": {}
-                    },
-                    "createAt": {
-                      "type": "string",
-                      "example": "2022-05-21T07:34:34.522Z"
-                    },
-                    "comments": {
-                      "type": "array",
-                      "items": {}
+                      "example": "2022-05-31T12:49:25.687Z"
                     }
                   }
                 }
