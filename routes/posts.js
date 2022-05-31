@@ -9,14 +9,18 @@ router.post("/addPost", isAuth, postsController.create);
 // search posts by keyword
 router.post("/search", isAuth, postsController.search);
 
-// updateComment
-router.post("/updateComment", isAuth, postsController.updateComment);
+// add Comment by post id
+router.post("/addComment/:id", isAuth, postsController.addComment);
+// delete Comment by post id 
+router.delete("/deleteComment/:id", isAuth ,postsController.delComment);
+// update Comment by post id 
+router.patch("/updateComment/:id", isAuth ,postsController.updateComment);
 
 // update a like by post id and user id 
 router.patch("/updateLike/", isAuth, postsController.updateLike);
 
 // retrieve all posts from db
-// router.get("/getAllPosts", postsController.findAll);
+router.get("/getAllPosts", postsController.findAll);
 
 // find a single post by id
 // router.get("/getOnePost/:id", postsController.findOne);

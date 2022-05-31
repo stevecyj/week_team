@@ -1,5 +1,6 @@
 const Post = require("../models/post.model"); // model Post
 const User = require("../models/user.model");
+const Comment = require("../models/comment.model")
 const { successHandler, errorHandler } =require('../server/handle')
 const { appError } = require("../exceptions");
 const { handleErrorAsync } = require('../middleware');
@@ -34,7 +35,12 @@ exports.create = (req, res, next) => {
         }
       }
     */
-    const { userId, content, image, likes ,tags} = req.body;
+    const userId = req.user.id
+    const isUser = await User.findById(userId).exec()
+    if(!isUser){
+      appError('400','找不到此用戶ID',next)
+    }
+    const { content, image, likes ,tags} = req.body;
     let dataPost = {
       user: userId,
       tags,
@@ -207,9 +213,12 @@ exports.search = (req, res, next) => {
     const count = await Post.find(filter).count();
     const posts = await Post.find(filter).sort(sort).skip(skip).limit(limit).populate({
       path: 'user',
-      select: 'userName avatar',
-    });
-    // console.log(posts);
+      select: 'userName avatar'
+    }).populate({
+      path: 'comments',
+      select: 'user comment'
+    })
+    console.log(posts);
     let resPosts = posts.map((item) => {
       return {
         user: item.user,
@@ -217,6 +226,7 @@ exports.search = (req, res, next) => {
         content: item.content,
         image: item.image,
         datetime_pub: item.createAt,
+        commets: item.comments
       };
     });
     let payload = { count, limit, page, posts: resPosts };
@@ -224,7 +234,7 @@ exports.search = (req, res, next) => {
   })(req, res, next)
 }
 
-exports.updateComment = (req, res, next) => {
+exports.addComment = (req, res, next) => {
   handleErrorAsync(async (req, res, next) => {
     /*
       #swagger.tags = ['Posts - 貼文']
@@ -260,18 +270,61 @@ exports.updateComment = (req, res, next) => {
         }
       }
     */
-    const {postId,userId,comment} = req.body
-    const data ={postId,userId,comment}
-    const userInfo = await User.find({_id:userId})
-    // const postDataComments = {userName:'sss234',userPhoto:'sssaas',message:data.comment}
-    const postDataComments = {userName:userInfo[0].userName,userPhoto:userInfo[0].avatar,message:comment}
-    const postItem= await Post.findOneAndUpdate({_id:postId},{ $push: { comments: postDataComments  } });
+      const userId = req.user.id
+      const postId = req.params.id
+      const {comment} = req.body
+      const userInfo = await User.findById(userId).exec()
+      if(!userInfo){
+        return next(appError(400,"無此發文者ID",next))
+      }
+    
+      if(!comment){
+        return next(appError(400,"無填寫留言",next))
+      }
+    
+      const newComment = await Comment.create({
+        post : postId,
+        user : userId,
+        comment
+      })
+      successHandler(res,'success',{comments: newComment})
+  })(req, res, next)
+}
 
-    if(!data.comment){
-      appError('404', '內容不能為空', next);
-    }else{
-      res.status(200).send({ status: "success", postItem });
+exports.delComment = (req, res, next)=>{
+  handleErrorAsync(async(req, res, next)=>{
+    const userId = req.user.id;
+    const commentId = req.params.id;
+    const commentInfo = await Comment.findById(commentId).exec()
+    if(!commentInfo){
+      appError('400',"無此留言",next)
     }
+    if(userId === commentInfo.user.id){
+      await Comment.findByIdAndDelete(commentInfo)
+    }else{
+      appError('400',"不同 userId 無法刪除",next)
+    }
+    successHandler(res,'success','已刪除此留言')
+  })(req, res, next)
+}
+
+exports.updateComment = (req, res, next)=>{
+  handleErrorAsync(async(req, res, next)=>{
+    const userId = req.user.id;
+    const commentId = req.params.id;
+    const {comment} = req.body
+    const commentInfo = await Comment.findById(commentId).exec()
+    if(!commentInfo){
+      appError('400',"無此留言或已刪除",next)
+    }
+    
+    if(userId === commentInfo.user.id){
+      await Comment.findByIdAndUpdate(commentId,{comment})
+    }else{
+      appError('400',"不同 userId 無法編輯留言",next)
+    }
+    const newComment = await Comment.findById(commentId).exec()
+    successHandler(res,'success',newComment)
   })(req, res, next)
 }
 

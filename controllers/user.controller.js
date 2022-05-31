@@ -193,17 +193,13 @@ exports.getProfile = (req, res, next) => {
         }
       }
     */
-    try {
-      const userId = req.params.id
-      const userItem = await User.find({_id:userId})
-      if(!Object.keys(userItem).length){
-        errorHandle(res, '查無此ID');
-      }else{
-        successHandle(res,userItem)
-      } 
-    } catch (error) {
-      errorHandle(res, error);
+    const userId = req.user.id
+    
+    const userInfo = await User.findById(userId).exec()
+    if(!userInfo){
+      appError('401','此ID無使用者資訊',next)
     }
+      successHandle(res,userInfo)
   })(req, res, next)
 };
 // user, update password

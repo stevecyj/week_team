@@ -1,21 +1,38 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
+
 const commentSchema = new mongoose.Schema(
-    {
-        userName: {
-            type: String,
-        },
-        userPhoto: {
-            type: String,
-        },
-        message: {
-            type: String,
-        },
+  {
+    comment: {
+      type: String,
+      required: [true, 'comment can not be empty!']
     },
-    {
-        versionKey: false,
+    createdAt: {
+      type: Date,
+      default: Date.now
+    },
+    user: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+      require: ['true', 'user must belong to a post.']
+    },
+    post: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Post',
+      require: ['true', 'comment must belong to a post.']
     }
+  },
+  {
+    versionKey: false, // 去除__v欄位
+  }
 );
+commentSchema.pre(/^find/, function(next) {
+  this.populate({
+    path: 'user',
+    select: 'userName id createdAt'
+  });
 
+  next();
+});
+const Comment = mongoose.model('Comment', commentSchema);
 
-const Comment = mongoose.model("Comment", commentSchema);
 module.exports = Comment;
