@@ -5,7 +5,7 @@ const { isAuth } = require('../middleware');
 
 router.post('/sign_up', usersController.signUp); // 使用者註冊
 router.post('/sign_in', usersController.signIn); // 使用者登入
-router.get('/profile/:id', isAuth, usersController.getProfile); // 使用者資料
+router.get('/profile', isAuth, usersController.getProfile); // 使用者資料
 router.post('/updatePassword', isAuth, usersController.updatePassword); // 修改密碼
 router.patch('/updateProfile', isAuth, usersController.updateProfile);
 router.post('/getFollowers', isAuth, usersController.getUserFollowers)
