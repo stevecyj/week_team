@@ -20,7 +20,6 @@ var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 var postsRouter = require("./routes/posts");
 var filesRouter = require("./routes/files")
-var filesRouter = require("./routes/files")
 
 var app = express();
 
