@@ -76,11 +76,11 @@ const sendNotification = (io) => {
 const connectSocket = handleErrorAsync(async (io) => {
   io.use(async (socket, next) => {
     // 檢查 token 格式
-    if (!socket.handshake.headers?.authorization && !socket.handshake.headers.authorization.startsWith('Bearer')) {
+    if (!socket.handshake.query?.Authorization && !socket.handshake.query.Authorization.startsWith('Bearer')) {
       return next(appError(401, '你尚未登入！', next));
     }
 
-    const token = socket.handshake.headers.authorization.split(' ')[1];
+    const token = socket.handshake.query.Authorization.split(' ')[1];
 
     // 檢查 token 資料
     if (!token) {
