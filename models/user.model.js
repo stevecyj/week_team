@@ -27,11 +27,25 @@ const userSchema = mongoose.Schema(
             default: 'notAccess'
         },
         follow: { // 追縱
-            type: [{id: {type: String}, datetime_update: {type: Date, default: Date.now}}],
+            type: [{
+                id: {
+                    type: mongoose.Schema.ObjectId,
+                    ref: 'User',
+                    required: [true, "使用者資訊未填寫"]
+                  }, 
+                datetime_update: {type: Date, default: Date.now}
+            }],
             default: []
         },
         beFollowed: {
-            type: [{id: {type: String}, datetime_update: {type: Date, default: Date.now}}],
+            type: [{
+                id: {
+                type: mongoose.Schema.ObjectId,
+                ref: 'User',
+                required: [true, "使用者資訊未填寫"]
+                }, 
+                datetime_update: {type: Date, default: Date.now}
+            }],
             default: []
         },
         likeList: {
