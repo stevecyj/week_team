@@ -328,19 +328,37 @@ exports.getUserFollowers = (req, res, next) => {
           "status": true,
           "data": [
             {
-              "id": "62811968820c4588fef6e57a",
-              "_id": "6288ab20d536ebfaec2c5a1b",
-              "datetime_update": "2022-05-21T09:04:32.992Z"
+              "_id": "628b935becef6eec03a0ecc7",
+              "userName": "皮皮",
+              "avatar": "https://randomuser.me/api/portraits/lego/3.jpg",
+              "gender": "notAccess",
+              "likeList": [],
+              "follow": [
+                {
+                    "id": {
+                        "_id": "627f4c9733358fcd5c994093",
+                        "userName": "心凌姊姊",
+                        "avatar": "https://randomuser.me/api/portraits/lego/3.jpg"
+                    },
+                    "_id": "629783d281d20b4d9a63119d",
+                    "datetime_update": "2022-06-01T15:20:50.232Z"
+                }
+              ],
+              "beFollowed": [],
+              "createAt": "2022-05-23T13:59:55.889Z",
+              "updateAt": "2022-05-23T13:59:55.889Z"
             }
           ]
         }
       }
     */
     const {body}= req;
-    const id = body.userId
-    const followrs = await User.findById(id)
-    console.log(followrs)
-    successHandle(res,followrs.follow)
+    const id = {"_id":body.userId}
+    const follower = await User.find(id).populate({
+      path: "follow.id",
+      select: 'userName avatar'
+    })
+    successHandle(res,follower)
   })(req, res, next)
 }
 
@@ -364,10 +382,20 @@ exports.follow = (req, res, next) => {
         description: '',
         schema: {
           "status": true,
-          "data":  {
+          "data": {
             "status": "追蹤成功",
-            "follow": "62811968820c4588fef6e57a",
-            "fans": 1
+            "fans": 1,
+            "follow": {
+              "_id": "627f4c9733358fcd5c994093",
+              "userName": "心凌姊姊",
+              "avatar": "https://randomuser.me/api/portraits/lego/3.jpg",
+              "gender": "notAccess",
+              "follow": [],
+              "beFollowed": [],
+              "likeList": [],
+              "createAt": "2022-05-14T06:30:47.303Z",
+              "updateAt": "2022-05-14T06:30:47.303Z"
+            }
           }
         }
       }
@@ -375,37 +403,35 @@ exports.follow = (req, res, next) => {
     const {body}= req;
     const id = body.userId //使用者本人
     const followId = body.followId //欲追蹤的人
-    const followrs = await User.findById(id)
-    const check = followrs.follow.find(item=>{
-      return item.id === followId;
-    })
-    if(check === undefined){
-      await User.findByIdAndUpdate(id,{
-        $push:{ follow:{id:followId} }
-      })
-      await User.findByIdAndUpdate(followId,{
-        $push:{ beFollowed:{id:id} }
-      })
-      const user = await User.findById(followId)
-      const beFollowers = user.beFollowed.length
-      successHandle(res,{
-        status: "追蹤成功",
-        follow: followId,
-        fans: beFollowers
-      })
-    }else{
+    const check = await User.find({$and: [
+      { _id: id },
+      { "follow.id": followId },
+    ]})
+    if(check.length>0){
       await User.findByIdAndUpdate(id,{
         $pull:{ follow:{id:followId} }
       })
       await User.findByIdAndUpdate(followId,{
         $pull:{ beFollowed:{id:id} }
       })
-      const user = await User.findById(followId)
-      const beFollowers = user.beFollowed.length
+      const followName = await User.findById(followId)
       successHandle(res,{
         status: "退追蹤成功",
-        unfollow: followId,
-        fans: beFollowers
+        fans: followName.beFollowed.length,
+        unfollow: followName
+      })
+    }else{
+      await User.findByIdAndUpdate(id,{
+        $push:{ follow:{id:followId} }
+      })
+      await User.findByIdAndUpdate(followId,{
+        $push:{ beFollowed:{id:id} }
+      })
+      const followName = await User.findById(followId)
+      successHandle(res,{
+        status: "追蹤成功",
+        fans: followName.beFollowed.length,
+        follow: followName
       })
     }
   })(req, res, next)
