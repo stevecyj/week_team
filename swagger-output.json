@@ -853,6 +853,119 @@
         ]
       }
     },
+    "/posts/likedPosts": {
+      "get": {
+        "tags": [
+          "Posts - 貼文"
+        ],
+        "description": "搜尋貼文 API",
+        "parameters": [
+          {
+            "name": "p",
+            "in": "query",
+            "description": "p頁數(default: 1)",
+            "type": "string"
+          },
+          {
+            "name": "s",
+            "in": "query",
+            "description": "s每頁幾筆(default: 10)",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "example": "6295cab2a2c8482ee670f374"
+                      },
+                      "user": {
+                        "type": "object",
+                        "properties": {
+                          "_id": {
+                            "type": "string",
+                            "example": "628897f1c31436e77ba6a8c1"
+                          },
+                          "userName": {
+                            "type": "string",
+                            "example": "Jolyne"
+                          },
+                          "avatar": {
+                            "type": "string",
+                            "example": "https://randomuser.me/api/portraits/lego/3.jpg"
+                          }
+                        }
+                      },
+                      "tags": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "type": {
+                        "type": "string",
+                        "example": "person"
+                      },
+                      "image": {
+                        "type": "string",
+                        "example": ""
+                      },
+                      "content": {
+                        "type": "string",
+                        "example": "再是一次，花惹發"
+                      },
+                      "likes": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "createAt": {
+                        "type": "string",
+                        "example": "2022-05-31T07:58:42.126Z"
+                      },
+                      "comments": {
+                        "type": "array",
+                        "items": {}
+                      },
+                      "id": {
+                        "type": "string",
+                        "example": "6295cab2a2c8482ee670f374"
+                      }
+                    }
+                  }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
+      }
+    },
     "/posts/addComment/{id}": {
       "post": {
         "tags": [
