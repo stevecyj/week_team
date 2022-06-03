@@ -92,6 +92,52 @@ router.post("/search", isAuth, handleErrorAsync(async (req, res, next) => {
   postsController.search(req, res, next);
 }));
 
+router.get("/likedPosts", isAuth, handleErrorAsync(async (req, res, next) => {
+  /*
+    #swagger.tags = ['Posts - 貼文']
+    #swagger.description = '搜尋貼文 API'
+    #swagger.security = [{ apiKeyAuth: [] }]
+    #swagger.parameters['p'] = {
+      in: 'query',
+      description: 'p頁數(default: 1)',
+    }
+    #swagger.parameters['s'] = {
+      in: 'query',
+      description: 's每頁幾筆(default: 10)',
+    }
+    #swagger.responses[200] = {
+      description: '',
+      schema: {
+        "status": "success",
+        "message": "success",
+        "data": [
+          {
+            "_id": "6295cab2a2c8482ee670f374",
+            "user": {
+                "_id": "628897f1c31436e77ba6a8c1",
+                "userName": "Jolyne",
+                "avatar": "https://randomuser.me/api/portraits/lego/3.jpg"
+            },
+            "tags": [
+                "test"
+            ],
+            "type": "person",
+            "image": "",
+            "content": "再是一次，花惹發",
+            "likes": [
+                "628930fbc6f889e77a6b3e55"
+            ],
+            "createAt": "2022-05-31T07:58:42.126Z",
+            "comments": [],
+            "id": "6295cab2a2c8482ee670f374"
+          }
+        ]
+      }
+    }
+  */
+  postsController.getLikedPosts(req, res, next);
+}));
+
 // add Comment by post id
 router.post("/comment/:id", isAuth, handleErrorAsync(async (req, res, next) => {
   /*

@@ -102,6 +102,20 @@ exports.search = async (req, res, next) => {
   res.status(200).send({ status: 'success', payload });
 }
 
+exports.getLikedPosts = async (req, res, next) => {
+  const {s: limit = 10, p: page = 1} = req.params;
+  const likedPosts = req.user.likeList;
+  let filter = {_id: {$in: likedPosts}}
+  let sort = {createAt: -1};
+  let skip = limit * (page - 1);
+  const count = await Post.find(filter).count();
+  const posts = await Post.find(filter).sort(sort).skip(skip).limit(limit)
+    .populate({path: 'user', select: 'userName avatar'})
+    .populate({path: 'comments', select: 'user comment'});
+
+  successHandler(res, 'success', posts)
+}
+
 exports.addComment = async (req, res, next) => {
   const userId = req.user.id
   const postId = req.params.id
