@@ -1,17 +1,12 @@
 const { successHandler} =require('../server/handle')
-const { handleErrorAsync } = require('../middleware');
 const { appError } = require("../exceptions");
 const { ImgurClient } = require('imgur');
 
 exports.uploadImage = async (req, res, next) =>{
   if(!req.files.length){
-    return next(appError(400,"尚未選取到需上傳的照片",next))
+    appError(400,"尚未選取到需上傳的照片",next)
   }
   
-  // const dimensions = sizeOf(req.files[0].buffer)
-  // if(dimensions.width !== dimensions.height){
-  //   return next(appError(400,"尚未上傳檔案",next))
-  // }
   const client = new ImgurClient({
     clientId : process.env.IMGUR_CILENTID,
     clientSecret : process.env.IMGUR_CILENT_SECRET,

@@ -1,9 +1,8 @@
 const Post = require("../models/post.model"); // model Post
 const User = require("../models/user.model");
 const Comment = require("../models/comment.model")
-const { successHandler, errorHandler } =require('../server/handle')
+const { successHandler } =require('../server/handle')
 const { appError } = require("../exceptions");
-const { handleErrorAsync } = require('../middleware');
 
 // create and save a new post
 exports.create = async (req, res, next) => {
@@ -109,11 +108,11 @@ exports.addComment = async (req, res, next) => {
   const {comment} = req.body
   const userInfo = await User.findById(userId).exec()
   if(!userInfo){
-    return next(appError(400,"無此發文者ID",next))
+    appError('400','無此發文者ID',next)
   }
 
   if(!comment){
-    return next(appError(400,"無填寫留言",next))
+    appError('400','無填寫留言',next)
   }
 
   const newComment = await Comment.create({

@@ -4,8 +4,6 @@ const User = require('../models/user.model');
 const { successHandle, errorHandle, generateSendJWT } = require('../service');
 const { appError } = require('../exceptions');
 const { filterParams } = require('../helper/utils');
-const { handleErrorAsync } = require('../middleware');
-
 
 // user, register
 exports.signUp = async (req, res, next) => { 
@@ -46,13 +44,13 @@ exports.signUp = async (req, res, next) => {
 exports.signIn = async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
-    return next(appError(400, '帳號密碼不可為空', next));
+    appError('400', '帳號密碼不可為空', next);
   }
   const user = await User.findOne({ email }).select('+password');
   // console.log(password, user.password);
   const auth = await bcrypt.compare(password, user.password);
   if (!auth) {
-    return next(appError(400, '您的密碼不正確', next));
+    appError('400', '您的密碼不正確', next);
   }
   generateSendJWT(user, 200, res);
 };
@@ -60,9 +58,9 @@ exports.signIn = async (req, res, next) => {
 exports.getProfile = async (req, res, next) => {
   const userId = req.user.id
   
-  const userInfo = await User.findById(userId).exec()
+  const userInfo = await User.findById(userId).exec();
   if(!userInfo){
-    appError('401','此ID無使用者資訊',next)
+    appError('401','此ID無使用者資訊',next);
   }
   successHandle(res,userInfo)
 };
@@ -70,12 +68,12 @@ exports.getProfile = async (req, res, next) => {
 exports.updatePassword = async (req, res, next) => {    
   const { password, confirmPassword } = req.body;
   if (password !== confirmPassword) {
-    return next(appError('400', '密碼不一致！', next));
+    appError('400', '密碼不一致！', next)
   }
   // 密碼 8 碼以上，16 碼以下，英大小寫+數+8碼+ exclued 特殊符號
   let reg = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,16}$/, 'g');
   if (password.match(reg) === null) {
-    return next(appError('400', '請確認密碼格式符合格式', next));
+    appError('400', '請確認密碼格式符合格式', next)
   }
 
   // check new password is same as old password
@@ -84,7 +82,7 @@ exports.updatePassword = async (req, res, next) => {
   const equal = await bcrypt.compare(password, currentUser.password);
   console.log(equal);
   if (equal) {
-    return next(appError('400', '請輸入新密碼', next));
+    appError('400', '請輸入新密碼', next)
   }
 
   const user = await User.findByIdAndUpdate(req.user.id, {
@@ -102,18 +100,18 @@ exports.updateProfile = async (req, res, next) => {
 
   // no data
   if (Object.keys(filterObj).length <= 0) {
-    return next(appError('400', '沒有傳送任何參數資料，無法更新', next));
+    appError('400', '沒有傳送任何參數資料，無法更新', next)
   }
 
   for (const key in filterObj) {
     // check type
     if (!dataTypes.includes(typeof filterObj[key])) {
-      return next(appError('400', `${key} 資料格式錯誤，目前為：${typeof filterObj[key]}，請為字串`, next));
+      appError('400', `${key} 資料格式錯誤，目前為：${typeof filterObj[key]}，請為字串`, next);
     }
 
     // check enum
     if (key === 'gender' && !genderTypes.includes(filterObj[key])) {
-      return next(appError('400', `性別資料格式錯誤，目前為：${filterObj[key]}，請為：'female', 'male', 'notAccess'`, next))
+      appError('400', `性別資料格式錯誤，目前為：${filterObj[key]}，請為：'female', 'male', 'notAccess'`, next);
     }
   }
 
@@ -138,6 +136,9 @@ exports.follow = async (req, res, next) => {
   const {body}= req;
   const id = body.userId //使用者本人
   const followId = body.followId //欲追蹤的人
+  if(id===followId){
+    appError('400','您無法對自己做追蹤功能',next)
+  }
   const check = await User.find({$and: [
     { _id: id },
     { "follow.id": followId },
