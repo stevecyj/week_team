@@ -88,7 +88,7 @@ router.get('/profile', isAuth, handleErrorAsync(async (req, res, next) => {
   */
   usersController.getProfile(req, rex, next);
 })); // 使用者資料
-router.post('/updatePassword', isAuth, handleErrorAsync(async (req, res, next) => {
+router.post('/password', isAuth, handleErrorAsync(async (req, res, next) => {
   /*
     #swagger.tags = ['Users - 使用者']
     #swagger.description = '重設使用者密碼 API'
@@ -115,7 +115,7 @@ router.post('/updatePassword', isAuth, handleErrorAsync(async (req, res, next) =
   */
   usersController.updatePassword(req, res, next);
 })); // 修改密碼
-router.patch('/updateProfile', isAuth, handleErrorAsync(async (req, res, next) => {
+router.patch('/profile', isAuth, handleErrorAsync(async (req, res, next) => {
   /*
     #swagger.tags = ['Users - 使用者']
     #swagger.description = '編輯個人資料 API'
@@ -140,7 +140,8 @@ router.patch('/updateProfile', isAuth, handleErrorAsync(async (req, res, next) =
   */
   usersController.updateProfile(req, res, next);
 }));
-router.post('/getFollowers', isAuth, handleErrorAsync(async (req, res, next) => {
+
+router.get('/followers', isAuth, handleErrorAsync(async (req, res, next) => {
   /*
     #swagger.tags = ['Users - 使用者']
     #swagger.description = '取得使用者自身的所有追蹤 API'
