@@ -85,7 +85,7 @@ exports.search = async (req, res, next) => {
     select: 'userName avatar'
   }).populate({
     path: 'comments',
-    select: 'user comment'
+    select: 'user comment createdAt'
   })
   console.log(posts);
   let resPosts = posts.map((item) => {
@@ -95,7 +95,8 @@ exports.search = async (req, res, next) => {
       content: item.content,
       image: item.image,
       datetime_pub: item.createAt,
-      commets: item.comments
+      commets: item.comments,
+      likes: item.likes
     };
   });
   let payload = { count, limit, page, posts: resPosts };
@@ -123,7 +124,8 @@ exports.getLikedPosts = async (req, res, next) => {
       content: item.content,
       image: item.image,
       datetime_pub: item.createAt,
-      commets: item.comments
+      commets: item.comments,
+      likes: item.likes
     };
   });
   let payload = { count, limit, page, posts: resPosts };
