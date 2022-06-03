@@ -1220,7 +1220,7 @@
         ],
         "responses": {
           "200": {
-            "description": "被留言之文章原始資料",
+            "description": "按讚者ID與被按讚文章ID",
             "schema": {
               "type": "object",
               "properties": {
@@ -1229,145 +1229,21 @@
                   "example": "success"
                 },
                 "message": {
-                  "type": "object",
-                  "properties": {
-                    "user": {
-                      "type": "object",
-                      "properties": {
-                        "gender": {
-                          "type": "string",
-                          "example": "notAccess"
-                        },
-                        "_id": {
-                          "type": "string",
-                          "example": "62749ba20b0c853f222d8697"
-                        },
-                        "avatar": {
-                          "type": "string",
-                          "example": "https://randomuser.me/api/portraits/lego/3.jpg"
-                        },
-                        "userName": {
-                          "type": "string",
-                          "example": "DDD"
-                        },
-                        "beFollowed": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string",
-                                "example": "62741e710b0c853f222d8691"
-                              },
-                              "datetime_update": {
-                                "type": "string",
-                                "example": "2022-05-05T19:03:55.552Z"
-                              }
-                            }
-                          }
-                        },
-                        "follow": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "id": {
-                                "type": "string",
-                                "example": "62741e710b0c853f222d8691"
-                              },
-                              "datetime_update": {
-                                "type": "string",
-                                "example": "2022-05-05T19:03:55.552Z"
-                              }
-                            }
-                          }
-                        },
-                        "likeList": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "createAt": {
-                          "type": "string",
-                          "example": "2022-05-21T09:49:12.543Z"
-                        },
-                        "updateAt": {
-                          "type": "string",
-                          "example": "2022-05-21T09:49:12.543Z"
-                        }
-                      }
-                    },
-                    "post": {
-                      "type": "object",
-                      "properties": {
-                        "_id": {
-                          "type": "string",
-                          "example": "6288960ac2049c4b43b9e5d3"
-                        },
-                        "user": {
-                          "type": "string",
-                          "example": "62749b880b0c853f222d8696"
-                        },
-                        "tags": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "type": {
-                          "type": "string",
-                          "example": "person"
-                        },
-                        "image": {
-                          "type": "string",
-                          "example": "https://i.picsum.photos/id/817/200/300.jpg?hmac=Egrlh6ZzXMOSu9esbUDMY8PhK3cBCmeqHyWBXm7dnHQ"
-                        },
-                        "content": {
-                          "type": "string",
-                          "example": "測試發文"
-                        },
-                        "likes": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          }
-                        },
-                        "createAt": {
-                          "type": "string",
-                          "example": "2022-05-21T07:34:34.522Z"
-                        },
-                        "comments": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "userName": {
-                                "type": "string",
-                                "example": "DDD"
-                              },
-                              "userPhoto": {
-                                "type": "string",
-                                "example": "https://randomuser.me/api/portraits/lego/3.jpg"
-                              },
-                              "message": {
-                                "type": "string",
-                                "example": "測試留言"
-                              },
-                              "_id": {
-                                "type": "string",
-                                "example": "6288b266ea5a7a1cdc79cd04"
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
+                  "type": "string",
+                  "example": "success"
                 },
                 "data": {
-                  "type": "array",
-                  "items": {}
+                  "type": "object",
+                  "properties": {
+                    "userId": {
+                      "type": "string",
+                      "example": "62749ba20b0c853f222d8697"
+                    },
+                    "postId": {
+                      "type": "string",
+                      "example": "6288960ac2049c4b43b9e5d3"
+                    }
+                  }
                 }
               },
               "xml": {

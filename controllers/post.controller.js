@@ -116,7 +116,7 @@ exports.getLikedPosts = async (req, res, next) => {
   const count = await Post.find(filter).count();
   const posts = await Post.find(filter).sort(sort).skip(skip).limit(+limit)
     .populate({path: 'user', select: 'userName avatar'})
-    .populate({path: 'comments', select: 'user comment'});
+    .populate({path: 'comments', select: 'user comment createdAt'});
   let resPosts = posts.map((item) => {
     return {
       user: item.user,
@@ -205,7 +205,7 @@ exports.updateLike = async (req, res, next) => {
         const post = await Post.findByIdAndUpdate({_id: postId},
           {$pull:{likes: userId}},
           {new: true})
-          successHandler(res, {user, post})
+          successHandler(res, 'success', {userId: user._id, postId: post.id})
       // 按讚不存在 寫入
       }else if(checkUserIdInPost === undefined && checkPostIdInUser === undefined){
         const user = await User.findByIdAndUpdate({_id: userId},
@@ -214,7 +214,7 @@ exports.updateLike = async (req, res, next) => {
         const post = await Post.findByIdAndUpdate({_id: postId},
           {$push:{likes: userId}},
           {new: true})
-        successHandler(res, {user, post})
+        successHandler(res, 'success', {userId: user._id, postId: post.id})
       // 其他資料不對其問題
       }else{
         appError('404', 'post id 或  user id 有誤', next);
