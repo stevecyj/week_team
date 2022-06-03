@@ -6,7 +6,7 @@ const doc = {
     process.env.NODE_ENV === 'production'
       ? 'safe-brushlands-13562.herokuapp.com'
       : `localhost:3005`,
-  schemes: ['https'],
+  schemes: ['https', 'http'],
   securityDefinitions: {
     apiKeyAuth: {
       type: 'apiKey',
