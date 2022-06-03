@@ -157,13 +157,21 @@
         }
       }
     },
-    "/users/profile": {
+    "/users/profile/{id}": {
       "get": {
         "tags": [
           "Users - 使用者"
         ],
         "description": "取得單一使用者資料 API",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "使用ID 測試用ID 628897f1c31436e77ba6a8c1"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -243,69 +251,6 @@
             "apiKeyAuth": []
           }
         ]
-      },
-      "patch": {
-        "tags": [
-          "Users - 使用者"
-        ],
-        "description": "編輯個人資料 API",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "gender options: [male, female, notAccess]",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "userName": {
-                  "type": "string",
-                  "example": "Jolyne"
-                },
-                "avatar": {
-                  "type": "string",
-                  "example": "https://randomuser.me/api/portraits/lego/3.jpg"
-                },
-                "gender": {
-                  "type": "string",
-                  "example": "female"
-                }
-              },
-              "required": [
-                "userName",
-                "avatar",
-                "gender"
-              ]
-            },
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "string",
-                  "example": "success"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "apiKeyAuth": []
-          }
-        ]
       }
     },
     "/users/password": {
@@ -362,6 +307,71 @@
                       "example": "JOJO"
                     }
                   }
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/users/profile": {
+      "patch": {
+        "tags": [
+          "Users - 使用者"
+        ],
+        "description": "編輯個人資料 API",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "gender options: [male, female, notAccess]",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userName": {
+                  "type": "string",
+                  "example": "Jolyne"
+                },
+                "avatar": {
+                  "type": "string",
+                  "example": "https://randomuser.me/api/portraits/lego/3.jpg"
+                },
+                "gender": {
+                  "type": "string",
+                  "example": "female"
+                }
+              },
+              "required": [
+                "userName",
+                "avatar",
+                "gender"
+              ]
+            },
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "string",
+                  "example": "success"
                 }
               },
               "xml": {

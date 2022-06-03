@@ -62,6 +62,11 @@ router.get('/profile/:id', isAuth, handleErrorAsync(async (req, res, next) => {
     #swagger.tags = ['Users - 使用者']
     #swagger.description = '取得單一使用者資料 API'
     #swagger.security = [{ apiKeyAuth: [] }]
+    #swagger.parameters['id'] = {
+      in: 'path',
+      description: '使用ID 測試用ID 628897f1c31436e77ba6a8c1',
+      required: true,
+    }
     #swagger.responses[200] = {
       description: '',
       schema: {
