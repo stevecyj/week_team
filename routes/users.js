@@ -57,7 +57,7 @@ router.post('/sign_in', handleErrorAsync(async (req, res, next) => {
   */
   usersController.signIn(req, res, next);
 })); // 使用者登入
-router.get('/profile', isAuth, handleErrorAsync(async (req, res, next) => {
+router.get('/profile/:id', isAuth, handleErrorAsync(async (req, res, next) => {
   /*
     #swagger.tags = ['Users - 使用者']
     #swagger.description = '取得單一使用者資料 API'
