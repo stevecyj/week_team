@@ -4,31 +4,31 @@ const commentSchema = new mongoose.Schema(
   {
     comment: {
       type: String,
-      required: [true, 'comment can not be empty!']
+      required: [true, 'comment can not be empty!'],
     },
     createdAt: {
       type: Date,
-      default: Date.now
+      default: Date.now,
     },
     user: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
-      require: ['true', 'user must belong to a post.']
+      require: ['true', 'user must belong to a post.'],
     },
     post: {
       type: mongoose.Schema.ObjectId,
       ref: 'Post',
-      require: ['true', 'comment must belong to a post.']
-    }
+      require: ['true', 'comment must belong to a post.'],
+    },
   },
   {
     versionKey: false, // 去除__v欄位
   }
 );
-commentSchema.pre(/^find/, function(next) {
+commentSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',
-    select: 'userName id avatar'
+    select: 'userName id avatar',
   });
 
   next();

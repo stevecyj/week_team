@@ -3,8 +3,10 @@ const router = express.Router();
 const usersController = require('../controllers/user.controller');
 const { isAuth, handleErrorAsync } = require('../middleware');
 
-router.post('/sign_up', handleErrorAsync(async (req, res, next) => {
-  /*
+router.post(
+  '/sign_up',
+  handleErrorAsync(async (req, res, next) => {
+    /*
     #swagger.tags = ['Users - 使用者']
     #swagger.description = '註冊使用者 API'
     #swagger.parameters['body'] = {
@@ -29,10 +31,13 @@ router.post('/sign_up', handleErrorAsync(async (req, res, next) => {
       }
     }
   */
-  usersController.signUp(req, res, next);
-})); // 使用者註冊
-router.post('/sign_in', handleErrorAsync(async (req, res, next) => {
-  /*
+    usersController.signUp(req, res, next);
+  })
+); // 使用者註冊
+router.post(
+  '/sign_in',
+  handleErrorAsync(async (req, res, next) => {
+    /*
     #swagger.tags = ['Users - 使用者']
     #swagger.description = '登入 API'
     #swagger.parameters['body'] = {
@@ -55,10 +60,14 @@ router.post('/sign_in', handleErrorAsync(async (req, res, next) => {
       }
     }
   */
-  usersController.signIn(req, res, next);
-})); // 使用者登入
-router.get('/profile/:id', isAuth, handleErrorAsync(async (req, res, next) => {
-  /*
+    usersController.signIn(req, res, next);
+  })
+); // 使用者登入
+router.get(
+  '/profile/:id',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    /*
     #swagger.tags = ['Users - 使用者']
     #swagger.description = '取得單一使用者資料 API'
     #swagger.security = [{ apiKeyAuth: [] }]
@@ -91,10 +100,14 @@ router.get('/profile/:id', isAuth, handleErrorAsync(async (req, res, next) => {
       }
     }
   */
-  usersController.getProfile(req, res, next);
-})); // 使用者資料
-router.post('/password', isAuth, handleErrorAsync(async (req, res, next) => {
-  /*
+    usersController.getProfile(req, res, next);
+  })
+); // 使用者資料
+router.post(
+  '/password',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    /*
     #swagger.tags = ['Users - 使用者']
     #swagger.description = '重設使用者密碼 API'
     #swagger.security = [{ apiKeyAuth: [] }]
@@ -118,10 +131,14 @@ router.post('/password', isAuth, handleErrorAsync(async (req, res, next) => {
       }
     }
   */
-  usersController.updatePassword(req, res, next);
-})); // 修改密碼
-router.patch('/profile', isAuth, handleErrorAsync(async (req, res, next) => {
-  /*
+    usersController.updatePassword(req, res, next);
+  })
+); // 修改密碼
+router.patch(
+  '/profile',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    /*
     #swagger.tags = ['Users - 使用者']
     #swagger.description = '編輯個人資料 API'
     #swagger.security = [{ apiKeyAuth: [] }]
@@ -143,11 +160,15 @@ router.patch('/profile', isAuth, handleErrorAsync(async (req, res, next) => {
       }
     }
   */
-  usersController.updateProfile(req, res, next);
-}));
+    usersController.updateProfile(req, res, next);
+  })
+);
 
-router.get('/followers', isAuth, handleErrorAsync(async (req, res, next) => {
-  /*
+router.get(
+  '/followers',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    /*
     #swagger.tags = ['Users - 使用者']
     #swagger.description = '取得使用者自身的所有追蹤 API'
     #swagger.security = [{ apiKeyAuth: [] }]
@@ -181,10 +202,14 @@ router.get('/followers', isAuth, handleErrorAsync(async (req, res, next) => {
       }
     }
   */
-  usersController.getUserFollowers(req, res, next);
-}));
-router.post('/follow', isAuth, handleErrorAsync(async (req, res, next) => {
-  /*
+    usersController.getUserFollowers(req, res, next);
+  })
+);
+router.post(
+  '/follow',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    /*
     #swagger.tags = ['Users - 使用者']
     #swagger.description = '追蹤/取消追蹤 API'
     #swagger.security = [{ apiKeyAuth: [] }]
@@ -219,7 +244,8 @@ router.post('/follow', isAuth, handleErrorAsync(async (req, res, next) => {
       }
     }
   */
-  usersController.follow(req, res, next);
-}));
+    usersController.follow(req, res, next);
+  })
+);
 
 module.exports = router;

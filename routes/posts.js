@@ -1,11 +1,14 @@
-var express = require("express");
+var express = require('express');
 var router = express.Router();
-const postsController = require("../controllers/post.controller");
+const postsController = require('../controllers/post.controller');
 const { isAuth, handleErrorAsync } = require('../middleware');
 
 // create and save a new post
-router.post("/post", isAuth, handleErrorAsync(async (req, res, next)=>{
-  /* 
+router.post(
+  '/post',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    /* 
     #swagger.tags = ['Posts - 貼文']
     #swagger.description = '新增貼文 API'
     #swagger.security = [{ apiKeyAuth: [] }]
@@ -32,12 +35,16 @@ router.post("/post", isAuth, handleErrorAsync(async (req, res, next)=>{
       }
     }
   */
-  postsController.create(req, res, next);
-}));
+    postsController.create(req, res, next);
+  })
+);
 
 // search posts by keyword
-router.post("/search", isAuth, handleErrorAsync(async (req, res, next) => {
-  /*
+router.post(
+  '/search',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    /*
     #swagger.tags = ['Posts - 貼文']
     #swagger.description = '搜尋貼文 API'
     #swagger.security = [{ apiKeyAuth: [] }]
@@ -88,12 +95,16 @@ router.post("/search", isAuth, handleErrorAsync(async (req, res, next) => {
         }
       }
     }
-  */    
-  postsController.search(req, res, next);
-}));
+  */
+    postsController.search(req, res, next);
+  })
+);
 
-router.get("/likedPosts", isAuth, handleErrorAsync(async (req, res, next) => {
-  /*
+router.get(
+  '/likedPosts',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    /*
     #swagger.tags = ['Posts - 貼文']
     #swagger.description = '搜尋貼文 API'
     #swagger.security = [{ apiKeyAuth: [] }]
@@ -135,12 +146,16 @@ router.get("/likedPosts", isAuth, handleErrorAsync(async (req, res, next) => {
       }
     }
   */
-  postsController.getLikedPosts(req, res, next);
-}));
+    postsController.getLikedPosts(req, res, next);
+  })
+);
 
 // add Comment by post id
-router.post("/comment/:id", isAuth, handleErrorAsync(async (req, res, next) => {
-  /*
+router.post(
+  '/comment/:id',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    /*
     #swagger.tags = ['Posts - 貼文']
     #swagger.description = '留言 API'
     #swagger.security = [{ apiKeyAuth: [] }]
@@ -174,12 +189,16 @@ router.post("/comment/:id", isAuth, handleErrorAsync(async (req, res, next) => {
       }
     }
   */
-  postsController.addComment(req, res, next);
-}));
+    postsController.addComment(req, res, next);
+  })
+);
 
-// delete Comment by post id 
-router.delete("/comment/:id", isAuth, handleErrorAsync(async (req, res, next) => {
-  /*
+// delete Comment by post id
+router.delete(
+  '/comment/:id',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    /*
     #swagger.tags = ['Posts - 貼文']
     #swagger.description = '刪除留言 API'
     #swagger.security = [{ apiKeyAuth: [] }]
@@ -197,12 +216,16 @@ router.delete("/comment/:id", isAuth, handleErrorAsync(async (req, res, next) =>
       }
     }
   */
-  postsController.delComment(req, res, next);
-}));
+    postsController.delComment(req, res, next);
+  })
+);
 
-// update Comment by post id 
-router.patch("/comment/:id", isAuth, handleErrorAsync(async (req, res, next) => {
-  /*
+// update Comment by post id
+router.patch(
+  '/comment/:id',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    /*
     #swagger.tags = ['Posts - 貼文']
     #swagger.description = '更新留言 API'
     #swagger.security = [{ apiKeyAuth: [] }]
@@ -237,12 +260,16 @@ router.patch("/comment/:id", isAuth, handleErrorAsync(async (req, res, next) => 
       }
     }
   */
-  postsController.updateComment(req, res, next);
-}));
+    postsController.updateComment(req, res, next);
+  })
+);
 
-// update a like by post id and user id 
-router.patch("/like", isAuth, handleErrorAsync(async (req, res, next) => {
-  /*
+// update a like by post id and user id
+router.patch(
+  '/like',
+  isAuth,
+  handleErrorAsync(async (req, res, next) => {
+    /*
     #swagger.tags = ['Posts - 貼文']
     #swagger.description = '按讚/取消讚 API'
     #swagger.security = [{ apiKeyAuth: [] }]
@@ -267,7 +294,8 @@ router.patch("/like", isAuth, handleErrorAsync(async (req, res, next) => {
       }
     }
   */
-  postsController.updateLike(req, res, next);
-}));
+    postsController.updateLike(req, res, next);
+  })
+);
 
 module.exports = router;
