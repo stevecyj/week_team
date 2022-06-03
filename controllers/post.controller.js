@@ -101,7 +101,7 @@ exports.search = async (req, res, next) => {
       image: item.image,
       datetime_pub: item.createAt,
       comments: item.comments,
-      likes: item.likes.length
+      likes: item.likes
     };
   });
   let payload = { count, limit, page, posts: resPosts };
@@ -137,7 +137,7 @@ exports.getLikedPosts = async (req, res, next) => {
       image: item.image,
       datetime_pub: item.createAt,
       comments: item.comments,
-      likes: item.likes.length
+      likes: item.likes
     };
   });
   let payload = { count, limit, page, posts: resPosts };
