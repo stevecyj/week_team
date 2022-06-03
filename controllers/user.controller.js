@@ -6,59 +6,6 @@ const { appError } = require('../exceptions');
 const { filterParams } = require('../helper/utils');
 const { handleErrorAsync } = require('../middleware');
 
-// --- 未用到API (後續待刪)--- start
-exports.getUsers = async (req, res) => {
-  /*
-    #swagger.tags = ['Users - 使用者']
-    #swagger.description = '取得所有使用者 API'
-    #swagger.ignore = true
-  */
-  const allUsers = await User.find();
-  successHandle(res, allUsers);
-};
-exports.createUser = async (req, res) => {
-  try {
-    const { body } = req;
-    if (body.email && body.userName && body.password) {
-      const newUser = await User.create({
-        email: body.email,
-        userName: body.userName,
-        password: body.password,
-        avatar: body.avatar,
-        gender: body.gender,
-        follow: body.follow,
-        beFollowed: body.beFollowed,
-        likeList: body.likeList,
-      });
-      successHandle(res, newUser);
-    } else {
-      errorHandle(res);
-    }
-  } catch (err) {
-    errorHandle(res, err);
-  }
-};
-exports.resetUserPassword = async (req, res) => {
-  /*
-    #swagger.tags = ['Users - 使用者']
-    #swagger.description = '重設使用者密碼 API'
-    #swagger.ignore = true
-  */
-  try {
-    const { id } = req.params;
-    const { body } = req;
-    const updateUser = await User.findById(id);
-    if (updateUser && body.password) {
-      const result = await User.findByIdAndUpdate(id, body);
-      result ? successHandle(res, updateUser) : errorHandle(res);
-    } else {
-      errorHandle(res);
-    }
-  } catch (err) {
-    errorHandle(res, err);
-  }
-};
-// --- 未用到API --- end
 
 // user, register
 exports.signUp = async (req, res, next) => { 
