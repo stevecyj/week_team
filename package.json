@@ -6,7 +6,8 @@
     "start": "NODE_ENV=production npm run swagger && node ./bin/www",
     "start-dev": "NODE_ENV=dev nodemon ./bin/www",
     "start-prod": "NODE_ENV=production nodemon ./bin/www",
-    "swagger": "node ./swagger.js"
+    "swagger": "node ./swagger.js",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -31,5 +32,8 @@
     "swagger-ui-express": "^4.4.0",
     "tslib": "^2.4.0",
     "validator": "^13.7.0"
+  },
+  "devDependencies": {
+    "prettier": "^2.6.2"
   }
 }

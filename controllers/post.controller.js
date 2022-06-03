@@ -1,21 +1,21 @@
-const Post = require("../models/post.model"); // model Post
-const User = require("../models/user.model");
-const Comment = require("../models/comment.model")
-const { successHandler } =require('../server/handle')
-const { appError } = require("../exceptions");
+const Post = require('../models/post.model'); // model Post
+const User = require('../models/user.model');
+const Comment = require('../models/comment.model');
+const { successHandler } = require('../server/handle');
+const { appError } = require('../exceptions');
 
 // create and save a new post
 exports.create = async (req, res, next) => {
-  const userId = req.user.id
-  const isUser = await User.findById(userId).exec()
-  if(!isUser){
-    appError('400','找不到此用戶ID',next)
+  const userId = req.user.id;
+  const isUser = await User.findById(userId).exec();
+  if (!isUser) {
+    appError('400', '找不到此用戶ID', next);
   }
-  const { content, image, likes ,tags} = req.body;
+  const { content, image, likes, tags } = req.body;
   let dataPost = {
     user: userId,
     tags,
-    type: req.body.type || "person",
+    type: req.body.type || 'person',
     image,
     content,
     likes,
@@ -27,7 +27,7 @@ exports.create = async (req, res, next) => {
     let payload = { postId: newPost._id };
     successHandler(res, 'success', payload);
   }
-}
+};
 
 // search posts by keyword
 exports.search = async (req, res, next) => {
@@ -80,13 +80,18 @@ exports.search = async (req, res, next) => {
   }
 
   const count = await Post.find(filter).count();
-  const posts = await Post.find(filter).sort(sort).skip(skip).limit(limit).populate({
-    path: 'user',
-    select: 'userName avatar'
-  }).populate({
-    path: 'comments',
-    select: 'user comment createdAt'
-  })
+  const posts = await Post.find(filter)
+    .sort(sort)
+    .skip(skip)
+    .limit(limit)
+    .populate({
+      path: 'user',
+      select: 'userName avatar',
+    })
+    .populate({
+      path: 'comments',
+      select: 'user comment createdAt',
+    });
   console.log(posts);
   let resPosts = posts.map((item) => {
     return {
@@ -96,27 +101,34 @@ exports.search = async (req, res, next) => {
       image: item.image,
       datetime_pub: item.createAt,
       commets: item.comments,
-      likes: item.likes.length
+      likes: item.likes.length,
     };
   });
   let payload = { count, limit, page, posts: resPosts };
   res.status(200).send({ status: 'success', payload });
-}
+};
 
 exports.getLikedPosts = async (req, res, next) => {
-  let {s: limit, p: page} = req.query;
+  let { s: limit, p: page } = req.query;
   limit = +limit;
   page = +page;
-  if(!(page > 0)) { page = 1 };
-  if(!(limit > 0)) { limit = 10 };
+  if (!(page > 0)) {
+    page = 1;
+  }
+  if (!(limit > 0)) {
+    limit = 10;
+  }
   const likedPosts = req.user.likeList;
-  let filter = {_id: {$in: likedPosts}}
-  let sort = {createAt: -1};
+  let filter = { _id: { $in: likedPosts } };
+  let sort = { createAt: -1 };
   let skip = +limit * (+page - 1);
   const count = await Post.find(filter).count();
-  const posts = await Post.find(filter).sort(sort).skip(skip).limit(+limit)
-    .populate({path: 'user', select: 'userName avatar'})
-    .populate({path: 'comments', select: 'user comment createdAt'});
+  const posts = await Post.find(filter)
+    .sort(sort)
+    .skip(skip)
+    .limit(+limit)
+    .populate({ path: 'user', select: 'userName avatar' })
+    .populate({ path: 'comments', select: 'user comment createdAt' });
   let resPosts = posts.map((item) => {
     return {
       user: item.user,
@@ -125,102 +137,109 @@ exports.getLikedPosts = async (req, res, next) => {
       image: item.image,
       datetime_pub: item.createAt,
       commets: item.comments,
-      likes: item.likes.length
+      likes: item.likes.length,
     };
   });
   let payload = { count, limit, page, posts: resPosts };
 
   successHandler(res, 'success', payload);
-}
+};
 
 exports.addComment = async (req, res, next) => {
-  const userId = req.user.id
-  const postId = req.params.id
-  const {comment} = req.body
-  const userInfo = await User.findById(userId).exec()
-  if(!userInfo){
-    appError('400','無此發文者ID',next)
+  const userId = req.user.id;
+  const postId = req.params.id;
+  const { comment } = req.body;
+  const userInfo = await User.findById(userId).exec();
+  if (!userInfo) {
+    appError('400', '無此發文者ID', next);
   }
 
-  if(!comment){
-    appError('400','無填寫留言',next)
+  if (!comment) {
+    appError('400', '無填寫留言', next);
   }
 
   const newComment = await Comment.create({
-    post : postId,
-    user : userId,
-    comment
-  })
-  successHandler(res,'success',{comments: newComment})
-}
+    post: postId,
+    user: userId,
+    comment,
+  });
+  successHandler(res, 'success', { comments: newComment });
+};
 
 exports.delComment = async (req, res, next) => {
   const userId = req.user.id;
   const commentId = req.params.id;
-  const commentInfo = await Comment.findById(commentId).exec()
-  if(!commentInfo){
-    appError('400',"無此留言",next)
+  const commentInfo = await Comment.findById(commentId).exec();
+  if (!commentInfo) {
+    appError('400', '無此留言', next);
   }
-  if(userId === commentInfo.user.id){
-    await Comment.findByIdAndDelete(commentInfo)
-  }else{
-    appError('400',"不同 userId 無法刪除",next)
+  if (userId === commentInfo.user.id) {
+    await Comment.findByIdAndDelete(commentInfo);
+  } else {
+    appError('400', '不同 userId 無法刪除', next);
   }
-  successHandler(res,'success','已刪除此留言')
-}
+  successHandler(res, 'success', '已刪除此留言');
+};
 
-exports.updateComment = async (req, res, next)=>{
+exports.updateComment = async (req, res, next) => {
   const userId = req.user.id;
   const commentId = req.params.id;
-  const {comment} = req.body
-  const commentInfo = await Comment.findById(commentId).exec()
-  if(!commentInfo){
-    appError('400',"無此留言或已刪除",next)
+  const { comment } = req.body;
+  const commentInfo = await Comment.findById(commentId).exec();
+  if (!commentInfo) {
+    appError('400', '無此留言或已刪除', next);
   }
-  
-  if(userId === commentInfo.user.id){
-    await Comment.findByIdAndUpdate(commentId,{comment})
-  }else{
-    appError('400',"不同 userId 無法編輯留言",next)
-  }
-  const newComment = await Comment.findById(commentId).exec()
-  successHandler(res,'success',newComment)
-}
 
-exports.updateLike = async (req, res, next) => {    
-  const { userId, postId } = req.body
-  // 是否存在 post , user id 
-  const user = await User.findOne({_id: userId})
-  const post = await Post.findOne({_id: postId})
-  
-  if(user !== null && post !== null){
-      // 行為 
-      const checkUserIdInPost = user.likeList.find( item => item === postId)
-      const checkPostIdInUser = post.likes.find(item => item === userId)
-      // 按讚存在 移除
-      if(checkUserIdInPost && checkPostIdInUser){
-        const user = await User.findByIdAndUpdate({_id: userId},
-          {$pull:{likeList: postId}},
-          {new: true})
-        const post = await Post.findByIdAndUpdate({_id: postId},
-          {$pull:{likes: userId}},
-          {new: true})
-          successHandler(res, 'success', {userId: user._id, postId: post.id})
+  if (userId === commentInfo.user.id) {
+    await Comment.findByIdAndUpdate(commentId, { comment });
+  } else {
+    appError('400', '不同 userId 無法編輯留言', next);
+  }
+  const newComment = await Comment.findById(commentId).exec();
+  successHandler(res, 'success', newComment);
+};
+
+exports.updateLike = async (req, res, next) => {
+  const { userId, postId } = req.body;
+  // 是否存在 post , user id
+  const user = await User.findOne({ _id: userId });
+  const post = await Post.findOne({ _id: postId });
+
+  if (user !== null && post !== null) {
+    // 行為
+    const checkUserIdInPost = user.likeList.find((item) => item === postId);
+    const checkPostIdInUser = post.likes.find((item) => item === userId);
+    // 按讚存在 移除
+    if (checkUserIdInPost && checkPostIdInUser) {
+      const user = await User.findByIdAndUpdate(
+        { _id: userId },
+        { $pull: { likeList: postId } },
+        { new: true }
+      );
+      const post = await Post.findByIdAndUpdate(
+        { _id: postId },
+        { $pull: { likes: userId } },
+        { new: true }
+      );
+      successHandler(res, 'success', { userId: user._id, postId: post.id });
       // 按讚不存在 寫入
-      }else if(checkUserIdInPost === undefined && checkPostIdInUser === undefined){
-        const user = await User.findByIdAndUpdate({_id: userId},
-          {$push:{likeList: postId}},
-          {new: true})
-        const post = await Post.findByIdAndUpdate({_id: postId},
-          {$push:{likes: userId}},
-          {new: true})
-        successHandler(res, 'success', {userId: user._id, postId: post.id})
+    } else if (checkUserIdInPost === undefined && checkPostIdInUser === undefined) {
+      const user = await User.findByIdAndUpdate(
+        { _id: userId },
+        { $push: { likeList: postId } },
+        { new: true }
+      );
+      const post = await Post.findByIdAndUpdate(
+        { _id: postId },
+        { $push: { likes: userId } },
+        { new: true }
+      );
+      successHandler(res, 'success', { userId: user._id, postId: post.id });
       // 其他資料不對其問題
-      }else{
-        appError('404', 'post id 或  user id 有誤', next);
-      }
-  }else{
+    } else {
+      appError('404', 'post id 或  user id 有誤', next);
+    }
+  } else {
     appError('404', 'post id 或  user id 有誤', next);
   }
-}
-
+};

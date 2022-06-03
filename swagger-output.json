@@ -4,10 +4,7 @@
   "host": "localhost:3005",
   "basePath": "/",
   "tags": [],
-  "schemes": [
-    "https",
-    "http"
-  ],
+  "schemes": ["https", "http"],
   "securityDefinitions": {
     "apiKeyAuth": {
       "type": "apiKey",
@@ -21,9 +18,7 @@
   "paths": {
     "/users/sign_up": {
       "post": {
-        "tags": [
-          "Users - 使用者"
-        ],
+        "tags": ["Users - 使用者"],
         "description": "註冊使用者 API",
         "parameters": [
           {
@@ -51,12 +46,7 @@
                   "example": "Qwer1234"
                 }
               },
-              "required": [
-                "userName",
-                "email",
-                "confirmPassword",
-                "password"
-              ]
+              "required": ["userName", "email", "confirmPassword", "password"]
             },
             "type": "string"
           }
@@ -95,9 +85,7 @@
     },
     "/users/sign_in": {
       "post": {
-        "tags": [
-          "Users - 使用者"
-        ],
+        "tags": ["Users - 使用者"],
         "description": "登入 API",
         "parameters": [
           {
@@ -117,10 +105,7 @@
                   "example": "Qwer1234"
                 }
               },
-              "required": [
-                "email",
-                "password"
-              ]
+              "required": ["email", "password"]
             },
             "type": "string"
           }
@@ -159,9 +144,7 @@
     },
     "/users/profile/{id}": {
       "get": {
-        "tags": [
-          "Users - 使用者"
-        ],
+        "tags": ["Users - 使用者"],
         "description": "取得單一使用者資料 API",
         "parameters": [
           {
@@ -255,9 +238,7 @@
     },
     "/users/password": {
       "post": {
-        "tags": [
-          "Users - 使用者"
-        ],
+        "tags": ["Users - 使用者"],
         "description": "重設使用者密碼 API",
         "parameters": [
           {
@@ -277,10 +258,7 @@
                   "example": "Qwer1235"
                 }
               },
-              "required": [
-                "password",
-                "confirmPassword"
-              ]
+              "required": ["password", "confirmPassword"]
             },
             "type": "string"
           }
@@ -324,9 +302,7 @@
     },
     "/users/profile": {
       "patch": {
-        "tags": [
-          "Users - 使用者"
-        ],
+        "tags": ["Users - 使用者"],
         "description": "編輯個人資料 API",
         "parameters": [
           {
@@ -350,11 +326,7 @@
                   "example": "female"
                 }
               },
-              "required": [
-                "userName",
-                "avatar",
-                "gender"
-              ]
+              "required": ["userName", "avatar", "gender"]
             },
             "type": "string"
           }
@@ -389,9 +361,7 @@
     },
     "/users/followers": {
       "get": {
-        "tags": [
-          "Users - 使用者"
-        ],
+        "tags": ["Users - 使用者"],
         "description": "取得使用者自身的所有追蹤 API",
         "parameters": [],
         "responses": {
@@ -493,9 +463,7 @@
     },
     "/users/follow": {
       "post": {
-        "tags": [
-          "Users - 使用者"
-        ],
+        "tags": ["Users - 使用者"],
         "description": "追蹤/取消追蹤 API",
         "parameters": [
           {
@@ -515,10 +483,7 @@
                   "example": "62811968820c4588fef6e57a"
                 }
               },
-              "required": [
-                "userId",
-                "followId"
-              ]
+              "required": ["userId", "followId"]
             },
             "type": "string"
           }
@@ -603,9 +568,7 @@
     },
     "/posts/post": {
       "post": {
-        "tags": [
-          "Posts - 貼文"
-        ],
+        "tags": ["Posts - 貼文"],
         "description": "新增貼文 API",
         "parameters": [
           {
@@ -637,12 +600,7 @@
                   "example": "https://i.picsum.photos/id/817/200/300.jpg?hmac=Egrlh6ZzXMOSu9esbUDMY8PhK3cBCmeqHyWBXm7dnHQ"
                 }
               },
-              "required": [
-                "userId",
-                "tags",
-                "type",
-                "content"
-              ]
+              "required": ["userId", "tags", "type", "content"]
             },
             "type": "string"
           }
@@ -686,9 +644,7 @@
     },
     "/posts/search": {
       "post": {
-        "tags": [
-          "Posts - 貼文"
-        ],
+        "tags": ["Posts - 貼文"],
         "description": "搜尋貼文 API",
         "parameters": [
           {
@@ -844,9 +800,7 @@
     },
     "/posts/likedPosts": {
       "get": {
-        "tags": [
-          "Posts - 貼文"
-        ],
+        "tags": ["Posts - 貼文"],
         "description": "搜尋貼文 API",
         "parameters": [
           {
@@ -957,9 +911,7 @@
     },
     "/posts/comment/{id}": {
       "post": {
-        "tags": [
-          "Posts - 貼文"
-        ],
+        "tags": ["Posts - 貼文"],
         "description": "留言 API",
         "parameters": [
           {
@@ -982,9 +934,7 @@
                   "example": "測試留言"
                 }
               },
-              "required": [
-                "comment"
-              ]
+              "required": ["comment"]
             },
             "type": "string"
           }
@@ -1047,9 +997,7 @@
         ]
       },
       "delete": {
-        "tags": [
-          "Posts - 貼文"
-        ],
+        "tags": ["Posts - 貼文"],
         "description": "刪除留言 API",
         "parameters": [
           {
@@ -1092,9 +1040,7 @@
         ]
       },
       "patch": {
-        "tags": [
-          "Posts - 貼文"
-        ],
+        "tags": ["Posts - 貼文"],
         "description": "更新留言 API",
         "parameters": [
           {
@@ -1117,9 +1063,7 @@
                   "example": "編輯留言"
                 }
               },
-              "required": [
-                "comment"
-              ]
+              "required": ["comment"]
             },
             "type": "string"
           }
@@ -1188,9 +1132,7 @@
     },
     "/posts/like": {
       "patch": {
-        "tags": [
-          "Posts - 貼文"
-        ],
+        "tags": ["Posts - 貼文"],
         "description": "按讚/取消讚 API",
         "parameters": [
           {
@@ -1210,10 +1152,7 @@
                   "example": "62749ba20b0c853f222d8697"
                 }
               },
-              "required": [
-                "postId",
-                "userId"
-              ]
+              "required": ["postId", "userId"]
             },
             "type": "string"
           }
@@ -1261,9 +1200,7 @@
     },
     "/upload/image": {
       "post": {
-        "tags": [
-          "Files - 圖片上傳"
-        ],
+        "tags": ["Files - 圖片上傳"],
         "description": "上傳圖片取得圖片網址 API",
         "parameters": [],
         "responses": {}

@@ -6,7 +6,7 @@ const { appError } = require('../exceptions');
 const { filterParams } = require('../helper/utils');
 
 // user, register
-exports.signUp = async (req, res, next) => { 
+exports.signUp = async (req, res, next) => {
   let { email, password, confirmPassword, userName } = req.body;
   // 內容不可為空
   if (!email || !password || !confirmPassword || !userName) {
@@ -37,7 +37,7 @@ exports.signUp = async (req, res, next) => {
     password,
     userName,
   });
-  console.log('here')
+  console.log('here');
   generateSendJWT(newUser, 201, res);
 };
 // user, sing in
@@ -56,23 +56,23 @@ exports.signIn = async (req, res, next) => {
 };
 // user, get profile
 exports.getProfile = async (req, res, next) => {
-  const userId = req.params.id
+  const userId = req.params.id;
   const userInfo = await User.findById(userId).exec();
-  if(!userInfo){
-    appError('401','此ID無使用者資訊',next);
+  if (!userInfo) {
+    appError('401', '此ID無使用者資訊', next);
   }
-  successHandle(res,userInfo)
+  successHandle(res, userInfo);
 };
 // user, update password
-exports.updatePassword = async (req, res, next) => {    
+exports.updatePassword = async (req, res, next) => {
   const { password, confirmPassword } = req.body;
   if (password !== confirmPassword) {
-    appError('400', '密碼不一致！', next)
+    appError('400', '密碼不一致！', next);
   }
   // 密碼 8 碼以上，16 碼以下，英大小寫+數+8碼+ exclued 特殊符號
   let reg = new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,16}$/, 'g');
   if (password.match(reg) === null) {
-    appError('400', '請確認密碼格式符合格式', next)
+    appError('400', '請確認密碼格式符合格式', next);
   }
 
   // check new password is same as old password
@@ -81,25 +81,25 @@ exports.updatePassword = async (req, res, next) => {
   const equal = await bcrypt.compare(password, currentUser.password);
   console.log(equal);
   if (equal) {
-    appError('400', '請輸入新密碼', next)
+    appError('400', '請輸入新密碼', next);
   }
 
   const user = await User.findByIdAndUpdate(req.user.id, {
     password: newPassword,
   });
   generateSendJWT(user, 200, res);
-}
+};
 
 // user, update profile
 exports.updateProfile = async (req, res, next) => {
   const dataTypes = ['string'];
   const genderTypes = ['female', 'male', 'notAccess'];
-  const data = { userName = null, avatar = null, gender = null } = req.body;
+  const data = ({ userName = null, avatar = null, gender = null } = req.body);
   const filterObj = filterParams(data);
 
   // no data
   if (Object.keys(filterObj).length <= 0) {
-    appError('400', '沒有傳送任何參數資料，無法更新', next)
+    appError('400', '沒有傳送任何參數資料，無法更新', next);
   }
 
   for (const key in filterObj) {
@@ -110,67 +110,68 @@ exports.updateProfile = async (req, res, next) => {
 
     // check enum
     if (key === 'gender' && !genderTypes.includes(filterObj[key])) {
-      appError('400', `性別資料格式錯誤，目前為：${filterObj[key]}，請為：'female', 'male', 'notAccess'`, next);
+      appError(
+        '400',
+        `性別資料格式錯誤，目前為：${filterObj[key]}，請為：'female', 'male', 'notAccess'`,
+        next
+      );
     }
   }
 
-  const newUserInfo = await User.updateOne({_id: req.user.id}, filterObj);
+  const newUserInfo = await User.updateOne({ _id: req.user.id }, filterObj);
 
   successHandle(res, 'success', newUserInfo);
-}
+};
 
 //列出使用者所有追蹤的人
 exports.getUserFollowers = async (req, res, next) => {
-  const id = {"_id":req.user.id}
-  if(!id){
-    return next(appError(400,"無使用者ID",next))
+  const id = { _id: req.user.id };
+  if (!id) {
+    return next(appError(400, '無使用者ID', next));
   }
   const follower = await User.find(id).populate({
-    path: "follow.id",
-    select: 'userName avatar'
-  })
-  successHandle(res,follower)
-}
+    path: 'follow.id',
+    select: 'userName avatar',
+  });
+  successHandle(res, follower);
+};
 
 //追蹤功能
 exports.follow = async (req, res, next) => {
-  const id = req.user.id //使用者本人
-  const {followId} = req.body //欲追蹤的人
-  if(!id){
-    return next(appError(400,"無使用者ID",next))
+  const id = req.user.id; //使用者本人
+  const { followId } = req.body; //欲追蹤的人
+  if (!id) {
+    return next(appError(400, '無使用者ID', next));
   }
-  if(!followId){
-    return next(appError(400,"無追蹤者ID",next))
+  if (!followId) {
+    return next(appError(400, '無追蹤者ID', next));
   }
-  const check = await User.find({$and: [
-    { "_id": id },
-    { "follow.id": followId },
-  ]})
-  if(check.length>0){
-    await User.findByIdAndUpdate(id,{
-      $pull:{ follow:{id:followId} }
-    })
-    await User.findByIdAndUpdate(followId,{
-      $pull:{ beFollowed:{id:id} }
-    })
-    const followName = await User.findById(followId)
-    successHandle(res,{
-      status: "退追蹤成功",
+  const check = await User.find({ $and: [{ _id: id }, { 'follow.id': followId }] });
+  if (check.length > 0) {
+    await User.findByIdAndUpdate(id, {
+      $pull: { follow: { id: followId } },
+    });
+    await User.findByIdAndUpdate(followId, {
+      $pull: { beFollowed: { id: id } },
+    });
+    const followName = await User.findById(followId);
+    successHandle(res, {
+      status: '退追蹤成功',
       fans: followName.beFollowed.length,
-      unfollow: followName
-    })
-  }else{
-    await User.findByIdAndUpdate(id,{
-      $push:{ follow:{id:followId} }
-    })
-    await User.findByIdAndUpdate(followId,{
-      $push:{ beFollowed:{id:id} }
-    })
-    const followName = await User.findById(followId)
-    successHandle(res,{
-      status: "追蹤成功",
+      unfollow: followName,
+    });
+  } else {
+    await User.findByIdAndUpdate(id, {
+      $push: { follow: { id: followId } },
+    });
+    await User.findByIdAndUpdate(followId, {
+      $push: { beFollowed: { id: id } },
+    });
+    const followName = await User.findById(followId);
+    successHandle(res, {
+      status: '追蹤成功',
       fans: followName.beFollowed.length,
-      follow: followName
-    })
+      follow: followName,
+    });
   }
-}
+};
