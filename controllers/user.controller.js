@@ -56,8 +56,7 @@ exports.signIn = async (req, res, next) => {
 };
 // user, get profile
 exports.getProfile = async (req, res, next) => {
-  const userId = req.user.id
-  
+  const userId = req.params.id
   const userInfo = await User.findById(userId).exec();
   if(!userInfo){
     appError('401','此ID無使用者資訊',next);
