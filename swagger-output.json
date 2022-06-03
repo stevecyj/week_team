@@ -5,7 +5,8 @@
   "basePath": "/",
   "tags": [],
   "schemes": [
-    "https"
+    "https",
+    "http"
   ],
   "securityDefinitions": {
     "apiKeyAuth": {
@@ -242,9 +243,72 @@
             "apiKeyAuth": []
           }
         ]
+      },
+      "patch": {
+        "tags": [
+          "Users - 使用者"
+        ],
+        "description": "編輯個人資料 API",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "gender options: [male, female, notAccess]",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userName": {
+                  "type": "string",
+                  "example": "Jolyne"
+                },
+                "avatar": {
+                  "type": "string",
+                  "example": "https://randomuser.me/api/portraits/lego/3.jpg"
+                },
+                "gender": {
+                  "type": "string",
+                  "example": "female"
+                }
+              },
+              "required": [
+                "userName",
+                "avatar",
+                "gender"
+              ]
+            },
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "boolean",
+                  "example": true
+                },
+                "data": {
+                  "type": "string",
+                  "example": "success"
+                }
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
       }
     },
-    "/users/updatePassword": {
+    "/users/password": {
       "post": {
         "tags": [
           "Users - 使用者"
@@ -313,98 +377,13 @@
         ]
       }
     },
-    "/users/updateProfile": {
-      "patch": {
-        "tags": [
-          "Users - 使用者"
-        ],
-        "description": "編輯個人資料 API",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "gender options: [male, female, notAccess]",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "userName": {
-                  "type": "string",
-                  "example": "Jolyne"
-                },
-                "avatar": {
-                  "type": "string",
-                  "example": "https://randomuser.me/api/portraits/lego/3.jpg"
-                },
-                "gender": {
-                  "type": "string",
-                  "example": "female"
-                }
-              },
-              "required": [
-                "userName",
-                "avatar",
-                "gender"
-              ]
-            },
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "boolean",
-                  "example": true
-                },
-                "data": {
-                  "type": "string",
-                  "example": "success"
-                }
-              },
-              "xml": {
-                "name": "main"
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "apiKeyAuth": []
-          }
-        ]
-      }
-    },
-    "/users/getFollowers": {
-      "post": {
+    "/users/followers": {
+      "get": {
         "tags": [
           "Users - 使用者"
         ],
         "description": "取得使用者自身的所有追蹤 API",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "description": "",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "userId": {
-                  "type": "string",
-                  "example": "628897f1c31436e77ba6a8c1"
-                }
-              },
-              "required": [
-                "userId"
-              ]
-            },
-            "type": "string"
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "追蹤清單請見id欄位而非_id",
@@ -612,7 +591,7 @@
         ]
       }
     },
-    "/posts/addPost": {
+    "/posts/post": {
       "post": {
         "tags": [
           "Posts - 貼文"
@@ -966,7 +945,7 @@
         ]
       }
     },
-    "/posts/addComment/{id}": {
+    "/posts/comment/{id}": {
       "post": {
         "tags": [
           "Posts - 貼文"
@@ -1056,9 +1035,7 @@
             "apiKeyAuth": []
           }
         ]
-      }
-    },
-    "/posts/deleteComment/{id}": {
+      },
       "delete": {
         "tags": [
           "Posts - 貼文"
@@ -1103,9 +1080,7 @@
             "apiKeyAuth": []
           }
         ]
-      }
-    },
-    "/posts/updateComment/{id}": {
+      },
       "patch": {
         "tags": [
           "Posts - 貼文"
@@ -1201,7 +1176,7 @@
         ]
       }
     },
-    "/posts/updateLike/": {
+    "/posts/like": {
       "patch": {
         "tags": [
           "Posts - 貼文"
@@ -1398,7 +1373,7 @@
         ]
       }
     },
-    "/files/uploadImage": {
+    "/upload/image": {
       "post": {
         "tags": [
           "Files - 圖片上傳"

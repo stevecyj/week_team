@@ -4,7 +4,7 @@ const postsController = require("../controllers/post.controller");
 const { isAuth, handleErrorAsync } = require('../middleware');
 
 // create and save a new post
-router.post("/", isAuth, handleErrorAsync(async (req, res, next)=>{
+router.post("/post", isAuth, handleErrorAsync(async (req, res, next)=>{
   /* 
     #swagger.tags = ['Posts - 貼文']
     #swagger.description = '新增貼文 API'
@@ -241,7 +241,7 @@ router.patch("/comment/:id", isAuth, handleErrorAsync(async (req, res, next) => 
 }));
 
 // update a like by post id and user id 
-router.patch("/like/", isAuth, handleErrorAsync(async (req, res, next) => {
+router.patch("/like", isAuth, handleErrorAsync(async (req, res, next) => {
   /*
     #swagger.tags = ['Posts - 貼文']
     #swagger.description = '按讚/取消讚 API'
@@ -313,26 +313,5 @@ router.patch("/like/", isAuth, handleErrorAsync(async (req, res, next) => {
   */
   postsController.updateLike(req, res, next);
 }));
-
-// retrieve all posts from db
-// router.get("/getAllPosts", postsController.findAll);
-
-// find a single post by id
-// router.get("/getOnePost/:id", postsController.findOne);
-
-// update a post by id
-// router.patch("/updatePost/:id", postsController.update);
-
-// test post, get req body
-// router.post("/testPost", postsController.testPost);
-
-// delete a post by id
-// router.delete("/deletePost/:id", postsController.delete);
-
-// delete all posts
-// router.delete("/deleteAllPosts", postsController.deleteAll);
-
-// find all published posts
-// router.get("/getAllPublishedPosts", postsController.findAllPublished);
 
 module.exports = router;

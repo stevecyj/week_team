@@ -86,7 +86,7 @@ router.get('/profile', isAuth, handleErrorAsync(async (req, res, next) => {
       }
     }
   */
-  usersController.getProfile(req, rex, next);
+  usersController.getProfile(req, res, next);
 })); // 使用者資料
 router.post('/password', isAuth, handleErrorAsync(async (req, res, next) => {
   /*
@@ -146,14 +146,6 @@ router.get('/followers', isAuth, handleErrorAsync(async (req, res, next) => {
     #swagger.tags = ['Users - 使用者']
     #swagger.description = '取得使用者自身的所有追蹤 API'
     #swagger.security = [{ apiKeyAuth: [] }]
-    #swagger.parameters['body'] = {
-      in: 'body',
-      description: '',
-      required: true,
-      schema: {
-        $userId: '628897f1c31436e77ba6a8c1',
-      }
-    }
     #swagger.responses[200] = {
       description: '追蹤清單請見id欄位而非_id',
       schema: {
@@ -224,8 +216,5 @@ router.post('/follow', isAuth, handleErrorAsync(async (req, res, next) => {
   */
   usersController.follow(req, res, next);
 }));
-// router.get('/getAllUsers', usersController.getUsers);
-// router.post('/addUser', usersController.createUser);
-// router.patch('/resetPassword/:id', usersController.resetUserPassword);
 
 module.exports = router;
