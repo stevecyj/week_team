@@ -256,58 +256,14 @@ router.patch("/like", isAuth, handleErrorAsync(async (req, res, next) => {
       }
     }
     #swagger.responses[200] = {
-      description: '被留言之文章原始資料',
+      description: '按讚者ID與被按讚文章ID',
       schema: {
         "status": "success",
-        "message": {
-          "user": {
-            "gender": "notAccess",
-            "_id": "62749ba20b0c853f222d8697",
-            "avatar": "https://randomuser.me/api/portraits/lego/3.jpg",
-            "userName": "DDD",
-            "beFollowed": [
-              {
-                "id": "62741e710b0c853f222d8691",
-                "datetime_update": "2022-05-05T19:03:55.552Z"
-              }
-            ],
-            "follow": [
-              {
-                "id": "62741e710b0c853f222d8691",
-                "datetime_update": "2022-05-05T19:03:55.552Z"
-              }
-            ],
-            "likeList": [
-              "627bd5634b9b3a393e5eb87c",
-              "6288960ac2049c4b43b9e5d3"
-            ],
-            "createAt": "2022-05-21T09:49:12.543Z",
-            "updateAt": "2022-05-21T09:49:12.543Z"
-          },
-          "post": {
-            "_id": "6288960ac2049c4b43b9e5d3",
-            "user": "62749b880b0c853f222d8696",
-            "tags": [
-              "[test]"
-            ],
-            "type": "person",
-            "image": "https://i.picsum.photos/id/817/200/300.jpg?hmac=Egrlh6ZzXMOSu9esbUDMY8PhK3cBCmeqHyWBXm7dnHQ",
-            "content": "測試發文",
-            "likes": [
-              "62749ba20b0c853f222d8697"
-            ],
-            "createAt": "2022-05-21T07:34:34.522Z",
-            "comments": [
-              {
-                "userName": "DDD",
-                "userPhoto": "https://randomuser.me/api/portraits/lego/3.jpg",
-                "message": "測試留言",
-                "_id": "6288b266ea5a7a1cdc79cd04"
-              }
-            ]
-          }
-        },
-        "data": []
+        "message": "success",
+        "data": {
+          "userId": "62749ba20b0c853f222d8697",
+          "postId": "6288960ac2049c4b43b9e5d3"
+        }
       }
     }
   */
