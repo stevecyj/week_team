@@ -103,17 +103,33 @@ exports.search = async (req, res, next) => {
 }
 
 exports.getLikedPosts = async (req, res, next) => {
-  const {s: limit = 10, p: page = 1} = req.params;
+  let {s: limit, p: page} = req.query;
+  limit = +limit;
+  page = +page;
+  if(!(page > 0)) { page = 1 };
+  if(!(limit > 0)) { limit = 10 };
   const likedPosts = req.user.likeList;
   let filter = {_id: {$in: likedPosts}}
   let sort = {createAt: -1};
-  let skip = limit * (page - 1);
+  let skip = +limit * (+page - 1);
   const count = await Post.find(filter).count();
-  const posts = await Post.find(filter).sort(sort).skip(skip).limit(limit)
+  const posts = await Post.find(filter).sort(sort).skip(skip).limit(+limit)
     .populate({path: 'user', select: 'userName avatar'})
     .populate({path: 'comments', select: 'user comment'});
+  console.log(posts)
+  let resPosts = posts.map((item) => {
+    return {
+      user: item.user,
+      postId: item._id,
+      content: item.content,
+      image: item.image,
+      datetime_pub: item.createAt,
+      commets: item.comments
+    };
+  });
+  let payload = { count, limit, page, posts: resPosts };
 
-  successHandler(res, 'success', posts)
+  successHandler(res, 'success', payload);
 }
 
 exports.addComment = async (req, res, next) => {
