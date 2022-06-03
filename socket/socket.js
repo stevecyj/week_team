@@ -80,7 +80,7 @@ const updateUserFollowers = (userId, followers) => {
 /** 更新在線使用者訊息數量
  * @param {*} sender sender info
  */
-const updateUserNotificationCount = (sender) => {
+const updateUsersNotificationCount = (sender) => {
   onlineUsers.forEach((user) => {
     user.userId !== sender.userId && user.followers.includes(sender.userId) && user.synCount++;
   });
@@ -164,7 +164,7 @@ const connectSocket = handleErrorAsync(async (io) => {
       const sender = getUser(socket.user.id);
 
       // 更新通知數量
-      updateUserNotificationCount(sender);
+      updateUsersNotificationCount(sender);
 
       // 發送通知
       sendNotification(io);
