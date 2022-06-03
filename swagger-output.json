@@ -420,17 +420,70 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "id": {
-                        "type": "string",
-                        "example": "62811968820c4588fef6e57a"
-                      },
                       "_id": {
                         "type": "string",
-                        "example": "6288ab20d536ebfaec2c5a1b"
+                        "example": "628b935becef6eec03a0ecc7"
                       },
-                      "datetime_update": {
+                      "userName": {
                         "type": "string",
-                        "example": "2022-05-21T09:04:32.992Z"
+                        "example": "皮皮"
+                      },
+                      "avatar": {
+                        "type": "string",
+                        "example": "https://randomuser.me/api/portraits/lego/3.jpg"
+                      },
+                      "gender": {
+                        "type": "string",
+                        "example": "notAccess"
+                      },
+                      "likeList": {
+                        "type": "array",
+                        "items": {}
+                      },
+                      "follow": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "object",
+                              "properties": {
+                                "_id": {
+                                  "type": "string",
+                                  "example": "627f4c9733358fcd5c994093"
+                                },
+                                "userName": {
+                                  "type": "string",
+                                  "example": "心凌姊姊"
+                                },
+                                "avatar": {
+                                  "type": "string",
+                                  "example": "https://randomuser.me/api/portraits/lego/3.jpg"
+                                }
+                              }
+                            },
+                            "_id": {
+                              "type": "string",
+                              "example": "629783d281d20b4d9a63119d"
+                            },
+                            "datetime_update": {
+                              "type": "string",
+                              "example": "2022-06-01T15:20:50.232Z"
+                            }
+                          }
+                        }
+                      },
+                      "beFollowed": {
+                        "type": "array",
+                        "items": {}
+                      },
+                      "createAt": {
+                        "type": "string",
+                        "example": "2022-05-23T13:59:55.889Z"
+                      },
+                      "updateAt": {
+                        "type": "string",
+                        "example": "2022-05-23T13:59:55.889Z"
                       }
                     }
                   }
@@ -498,13 +551,50 @@
                       "type": "string",
                       "example": "追蹤成功"
                     },
-                    "follow": {
-                      "type": "string",
-                      "example": "62811968820c4588fef6e57a"
-                    },
                     "fans": {
                       "type": "number",
                       "example": 1
+                    },
+                    "follow": {
+                      "type": "object",
+                      "properties": {
+                        "_id": {
+                          "type": "string",
+                          "example": "627f4c9733358fcd5c994093"
+                        },
+                        "userName": {
+                          "type": "string",
+                          "example": "心凌姊姊"
+                        },
+                        "avatar": {
+                          "type": "string",
+                          "example": "https://randomuser.me/api/portraits/lego/3.jpg"
+                        },
+                        "gender": {
+                          "type": "string",
+                          "example": "notAccess"
+                        },
+                        "follow": {
+                          "type": "array",
+                          "items": {}
+                        },
+                        "beFollowed": {
+                          "type": "array",
+                          "items": {}
+                        },
+                        "likeList": {
+                          "type": "array",
+                          "items": {}
+                        },
+                        "createAt": {
+                          "type": "string",
+                          "example": "2022-05-14T06:30:47.303Z"
+                        },
+                        "updateAt": {
+                          "type": "string",
+                          "example": "2022-05-14T06:30:47.303Z"
+                        }
+                      }
                     }
                   }
                 }
@@ -1193,6 +1283,16 @@
             "apiKeyAuth": []
           }
         ]
+      }
+    },
+    "/files/uploadImage": {
+      "post": {
+        "tags": [
+          "Files - 圖片上傳"
+        ],
+        "description": "上傳圖片取得圖片網址 API",
+        "parameters": [],
+        "responses": {}
       }
     }
   },
