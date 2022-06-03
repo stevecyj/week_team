@@ -116,7 +116,6 @@ exports.getLikedPosts = async (req, res, next) => {
   const posts = await Post.find(filter).sort(sort).skip(skip).limit(+limit)
     .populate({path: 'user', select: 'userName avatar'})
     .populate({path: 'comments', select: 'user comment'});
-  console.log(posts)
   let resPosts = posts.map((item) => {
     return {
       user: item.user,
