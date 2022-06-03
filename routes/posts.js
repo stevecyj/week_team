@@ -93,7 +93,7 @@ router.post("/search", isAuth, handleErrorAsync(async (req, res, next) => {
 }));
 
 // add Comment by post id
-router.post("/addComment/:id", isAuth, handleErrorAsync(async (req, res, next) => {
+router.post("/comment/:id", isAuth, handleErrorAsync(async (req, res, next) => {
   /*
     #swagger.tags = ['Posts - 貼文']
     #swagger.description = '留言 API'
@@ -132,7 +132,7 @@ router.post("/addComment/:id", isAuth, handleErrorAsync(async (req, res, next) =
 }));
 
 // delete Comment by post id 
-router.delete("/deleteComment/:id", isAuth, handleErrorAsync(async (req, res, next) => {
+router.delete("/comment/:id", isAuth, handleErrorAsync(async (req, res, next) => {
   /*
     #swagger.tags = ['Posts - 貼文']
     #swagger.description = '刪除留言 API'
@@ -155,7 +155,7 @@ router.delete("/deleteComment/:id", isAuth, handleErrorAsync(async (req, res, ne
 }));
 
 // update Comment by post id 
-router.patch("/updateComment/:id", isAuth, handleErrorAsync(async (req, res, next) => {
+router.patch("/comment/:id", isAuth, handleErrorAsync(async (req, res, next) => {
   /*
     #swagger.tags = ['Posts - 貼文']
     #swagger.description = '更新留言 API'
