@@ -1,27 +1,47 @@
 const jwt = require('jsonwebtoken');
 const { handleErrorAsync } = require('../middleware');
-const { appError } = require("../exceptions");
+const { appError } = require('../exceptions');
 const User = require('../models/user.model');
 
 /** 目標通知數量 */
 const TARGET_NOTIFICATION_COUNT = 5;
 /** 初始化通知數量 */
 const INIT_NOTIFICATION_COUNT = 0;
+/** 使用者限制連線數量 */
+const SOCKET_CONNECT_LIMIT_COUNT = 50;
 
-/** 在線使用者，資料結構 ex：[{ userId: '1', socketIds: ['1'], synCount: 0 }] */
+/** 在線使用者，資料結構 ex：[{ userId: '1', socketIds: ['1'], synCount: 0, followers: ['userId'] }] */
 let onlineUsers = [];
 
 /** 新增在線使用者
- * @param {*} userId userId
- * @param {*} socketId  socketId
+ * @param {*} socket socket 連線實體
  */
-const addNewUser = (userId, socketId) => {
-  if (onlineUsers.some((user) => user.userId === userId)) {
-    onlineUsers.forEach(user => {
-      user.userId === userId && !user.socketIds.includes(socketId) && user.socketIds.push(socketId);
+const addNewUser = (socket) => {
+  const userId = socket.user.id;
+  const followers = socket.user.follow.map((follower) => follower._id.toString());
+  const socketId = socket.id;
+  const onlineUser = onlineUsers.find((onlineUser) => onlineUser.userId === userId);
+
+  // 檢查 user 是否開太多連線，太多關閉連線
+  if (onlineUser?.socketIds?.length >= SOCKET_CONNECT_LIMIT_COUNT) {
+    socket.disconnect();
+    return false;
+  }
+
+  // 檢查使用者是否新增過
+  if (onlineUser) {
+    onlineUsers.forEach((onlineUser) => {
+      onlineUser.userId === userId &&
+        !onlineUser.socketIds.includes(socketId) &&
+        onlineUser.socketIds.push(socketId);
     });
   } else {
-    onlineUsers.push({ userId, socketIds: [socketId], synCount: INIT_NOTIFICATION_COUNT });
+    onlineUsers.push({
+      userId,
+      socketIds: [socketId],
+      synCount: INIT_NOTIFICATION_COUNT,
+      followers,
+    });
   }
 };
 
@@ -32,7 +52,7 @@ const addNewUser = (userId, socketId) => {
 const removeUser = (userId, socketId) => {
   // 更新陣列內 user socketIds 資料
   onlineUsers.forEach((user) => {
-    user.userId === userId && (user.socketIds = user.socketIds.filter((id) => id !== socketId))
+    user.userId === userId && (user.socketIds = user.socketIds.filter((id) => id !== socketId));
   });
 
   // 移除 user socketIds 等於 0 的
@@ -43,21 +63,31 @@ const removeUser = (userId, socketId) => {
  * @param {*} userId userId
  * @returns {Object} 在線使用者資訊
  */
-const getUsers = (userId) => {
+const getUser = (userId) => {
   return onlineUsers.find((user) => user.userId === userId);
 };
 
+/** 更新使用者追蹤資料
+ * @param {*} userId 要更新的 userId
+ * @param {*} followers 追蹤者名單
+ */
+const updateUserFollowers = (userId, followers) => {
+  onlineUsers.forEach((onlineUser) => {
+    onlineUser.userId === userId && (onlineUser.followers = followers);
+  });
+};
+
 /** 更新在線使用者訊息數量
- * @param {*} socketId socketId
+ * @param {*} sender sender info
  */
 const updateUserNotificationCount = (sender) => {
   onlineUsers.forEach((user) => {
-    user.userId !== sender.userId && user.synCount++
+    user.userId !== sender.userId && user.followers.includes(sender.userId) && user.synCount++;
   });
 };
 
 /** 發送通知給達到特定數量通知的使用者
- * @param {*} io socket id 實體
+ * @param {*} io 整個 socket 實體
  */
 const sendNotification = (io) => {
   onlineUsers.forEach((user) => {
@@ -76,7 +106,10 @@ const sendNotification = (io) => {
 const connectSocket = handleErrorAsync(async (io) => {
   io.use(async (socket, next) => {
     // 檢查 token 格式
-    if (!socket.handshake.query?.Authorization && !socket.handshake.query.Authorization.startsWith('Bearer')) {
+    if (
+      !socket.handshake.query?.Authorization &&
+      !socket.handshake.query.Authorization.startsWith('Bearer')
+    ) {
       return next(appError(401, '你尚未登入！', next));
     }
 
@@ -116,17 +149,19 @@ const connectSocket = handleErrorAsync(async (io) => {
 
     // socket 實體加上 user 資訊，往下傳
     next();
-  })
-  .on('connection', (socket) => {
+  }).on('connection', (socket) => {
     // 註冊使用者
-    socket.on('newUser', () => {
-      addNewUser(socket.user.id, socket.id);
-    });
+    addNewUser(socket);
 
-    // // 發送更新通知
-    socket.on('updatePost', () => {
+    // 更新使用者追蹤名單
+    socket.on('updateUserFollowers', (followers = []) =>
+      updateUserFollowers(socket.user.id, followers)
+    );
+
+    // 發送更新通知
+    socket.on('updatePost', async () => {
       // 發送通知者
-      const sender = getUsers(socket.user.id);
+      const sender = getUser(socket.user.id);
 
       // 更新通知數量
       updateUserNotificationCount(sender);
@@ -136,11 +171,8 @@ const connectSocket = handleErrorAsync(async (io) => {
     });
 
     // 移除使用者
-    socket.on('disconnect', () => {
-      removeUser(socket.user.id, socket.id);
-    });
+    socket.on('disconnect', () => removeUser(socket.user.id, socket.id));
   });
 });
-
 
 module.exports = connectSocket;
