@@ -122,8 +122,10 @@ exports.updateProfile = async (req, res, next) => {
 
 //列出使用者所有追蹤的人
 exports.getUserFollowers = async (req, res, next) => {
-  const {body}= req;
-  const id = {"_id":body.userId}
+  const id = {"_id":req.user.id}
+  if(!id){
+    return next(appError(400,"無使用者ID",next))
+  }
   const follower = await User.find(id).populate({
     path: "follow.id",
     select: 'userName avatar'
@@ -133,14 +135,16 @@ exports.getUserFollowers = async (req, res, next) => {
 
 //追蹤功能
 exports.follow = async (req, res, next) => {
-  const {body}= req;
-  const id = body.userId //使用者本人
-  const followId = body.followId //欲追蹤的人
-  if(id===followId){
-    appError('400','您無法對自己做追蹤功能',next)
+  const id = req.user.id //使用者本人
+  const {followId} = req.body //欲追蹤的人
+  if(!id){
+    return next(appError(400,"無使用者ID",next))
+  }
+  if(!followId){
+    return next(appError(400,"無追蹤者ID",next))
   }
   const check = await User.find({$and: [
-    { _id: id },
+    { "_id": id },
     { "follow.id": followId },
   ]})
   if(check.length>0){

@@ -4,7 +4,7 @@ const postsController = require("../controllers/post.controller");
 const { isAuth, handleErrorAsync } = require('../middleware');
 
 // create and save a new post
-router.post("/addPost", isAuth, handleErrorAsync(async (req, res, next)=>{
+router.post("/", isAuth, handleErrorAsync(async (req, res, next)=>{
   /* 
     #swagger.tags = ['Posts - 貼文']
     #swagger.description = '新增貼文 API'
@@ -241,7 +241,7 @@ router.patch("/comment/:id", isAuth, handleErrorAsync(async (req, res, next) => 
 }));
 
 // update a like by post id and user id 
-router.patch("/updateLike/", isAuth, handleErrorAsync(async (req, res, next) => {
+router.patch("/like/", isAuth, handleErrorAsync(async (req, res, next) => {
   /*
     #swagger.tags = ['Posts - 貼文']
     #swagger.description = '按讚/取消讚 API'
