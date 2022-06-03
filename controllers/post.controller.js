@@ -6,57 +6,28 @@ const { appError } = require("../exceptions");
 const { handleErrorAsync } = require('../middleware');
 
 // create and save a new post
-exports.create = (req, res, next) => {
-  handleErrorAsync(async (req, res, next) => {
-    /* 
-      #swagger.tags = ['Posts - 貼文']
-      #swagger.description = '新增貼文 API'
-      #swagger.security = [{ apiKeyAuth: [] }]
-      #swagger.parameters['body'] = {
-        in: 'body',
-        description: '',
-        required: true,
-        schema: {
-          $userId: '62749b880b0c853f222d8696',
-          $tags: '[test]',
-          $type: 'person',
-          $content: '測試發文',
-          image: 'https://i.picsum.photos/id/817/200/300.jpg?hmac=Egrlh6ZzXMOSu9esbUDMY8PhK3cBCmeqHyWBXm7dnHQ',
-        }
-      }
-      #swagger.responses[200] = {
-        description: '',
-        schema: {
-          status: 'success',
-          message: 'success',
-          data: {
-              postId: '62886e5e526a5458bac3efd6'
-          }
-        }
-      }
-    */
-    const userId = req.user.id
-    const isUser = await User.findById(userId).exec()
-    if(!isUser){
-      appError('400','找不到此用戶ID',next)
-    }
-    const { content, image, likes ,tags} = req.body;
-    let dataPost = {
-      user: userId,
-      tags,
-      type: req.body.type || "person",
-      image,
-      content,
-      likes,
-    };
-    if (!dataPost.content) {
-      appError('400', '內容不能為空', next);
-    } else {
-      const newPost = await Post.create(dataPost);
-      let payload = { postId: newPost._id };
-      successHandler(res, 'success', payload);
-    }
-  })(req, res, next)
+exports.create = async (req, res, next) => {
+  const userId = req.user.id
+  const isUser = await User.findById(userId).exec()
+  if(!isUser){
+    appError('400','找不到此用戶ID',next)
+  }
+  const { content, image, likes ,tags} = req.body;
+  let dataPost = {
+    user: userId,
+    tags,
+    type: req.body.type || "person",
+    image,
+    content,
+    likes,
+  };
+  if (!dataPost.content) {
+    appError('400', '內容不能為空', next);
+  } else {
+    const newPost = await Post.create(dataPost);
+    let payload = { postId: newPost._id };
+    successHandler(res, 'success', payload);
+  }
 }
 
 // --- 未用到API (後續待刪)--- start
@@ -119,385 +90,167 @@ exports.testPost = async (req, res) => {
 // --- 未用到API --- end
 
 // search posts by keyword
-exports.search = (req, res, next) => {
-  handleErrorAsync(async (req, res, next) => {
-    /*
-      #swagger.tags = ['Posts - 貼文']
-      #swagger.description = '搜尋貼文 API'
-      #swagger.security = [{ apiKeyAuth: [] }]
-      #swagger.parameters['body'] = {
-        in: 'body',
-        description: 'keyword: 搜尋關鍵字，空值為全部搜尋,\n sortby: 只提供最新貼文時間排序,\n  limit: 每頁幾筆,\n page: 第幾頁開始,\n userId: 填入登入使用者，會搜尋使用者與使用者追蹤者貼文,\n authorId: 搜尋特定使用者所有發文，此欄如有填，則userId欄位無作用\n 不填keyword, userId, authorId可以搜尋全部文章/n userId和authorId二選一填，userId用在個人動態牆，authorId用在特定使用者所有發文',
-        schema: {
-          keyword: "", 
-          sortby: "datetime_pub",
-          limit: 10,
-          page: 1,
-          userId: "62741e710b0c853f222d8691",
-          authorId: "62749ba20b0c853f222d8697"
-        }
-      }
-      #swagger.responses[200] = {
-        description: '',
-        schema: {
-          "status": "success",
-          "payload": {
-            "count": 3,
-            "limit": 10,
-            "page": 1,
-            "posts": [
-              {
-                "user": {
-                  "_id": "62749ba20b0c853f222d8697",
-                  "avatar": "https://randomuser.me/api/portraits/lego/3.jpg",
-                  "userName": "DDD"
-                },
-                "postId": "627bd58d4b9b3a393e5eb884",
-                "content": "測試發文",
-                "image": "https://i.picsum.photos/id/817/200/300.jpg?hmac=Egrlh6ZzXMOSu9esbUDMY8PhK3cBCmeqHyWBXm7dnHQ",
-                "datetime_pub": "2022-05-11T15:26:05.393Z",
-                "commets": [
-                  {
-                    "_id": "629610fb7e35a043b9cb87bf",
-                    "comment": "測試留言",
-                    "user": {
-                      "_id": "628897f1c31436e77ba6a8c1",
-                      "userName": "Jolyne"
-                    },
-                    "post": "627bd58d4b9b3a393e5eb884"
-                  }
-                ]
-              }
-            ]
-          }
-        }
-      }
-    */
-    let { keyword, sortby, limit = 10, page = 1, userId, authorId } = req.body;
-    let filter = keyword ? { content: new RegExp(`${keyword}`) } : {};
-    let sort = sortby === 'datetime_pub' ? { createAt: -1 } : {};
-    if (page < 0) {
-      page = 1;
-    }
-    let skip = limit * (page - 1);
+exports.search = async (req, res, next) => {
+  let { keyword, sortby, limit = 10, page = 1, userId, authorId } = req.body;
+  let filter = keyword ? { content: new RegExp(`${keyword}`) } : {};
+  let sort = sortby === 'datetime_pub' ? { createAt: -1 } : {};
+  if (page < 0) {
+    page = 1;
+  }
+  let skip = limit * (page - 1);
 
-    if (authorId) {
-      // 查詢特定使用者
-      filter.user = authorId;
-    } else if (userId) {
-      // 動態牆搜尋：1.呈現使用者追蹤對象和自己的發文 2.使用者無追縱對象時，由系統隨機抽樣10人給使用者(不足10人使用全清單)
-      const users = await User.find({ _id: userId });
-      let follow = users[0] ? users[0].follow.map((item) => item.id) : [];
+  if (authorId) {
+    // 查詢特定使用者
+    filter.user = authorId;
+  } else if (userId) {
+    // 動態牆搜尋：1.呈現使用者追蹤對象和自己的發文 2.使用者無追縱對象時，由系統隨機抽樣10人給使用者(不足10人使用全清單)
+    const users = await User.find({ _id: userId });
+    let follow = users[0] ? users[0].follow.map((item) => item.id) : [];
 
-      if (!follow.length) {
-        // 處理初始使用者未有follow時的動態牆搜尋
-        // 之後可用資料庫語法來refact
-        const userList = await User.find({});
-        if (userList.length < 10) {
-          follow = userList
-            .filter((item) => item._id.toString() !== userId)
-            .map((item) => item._id.toString());
-        } else {
-          let cumulattor = 0;
-          follow = userList
-            .filter((item) => {
-              if (item._id.toString() === userId) {
-                return false;
-              }
-              if (cumulattor <= 10 && Math.random() > 0.5) {
-                cumulattor++;
-                return true;
-              } else {
-                return false;
-              }
-            })
-            .map((item) => item._id.toString());
-        }
-      }
-
-      follow.push(userId);
-      // console.log(follow);
-
-      filter.user = { $in: follow };
-    }
-
-    const count = await Post.find(filter).count();
-    const posts = await Post.find(filter).sort(sort).skip(skip).limit(limit).populate({
-      path: 'user',
-      select: 'userName avatar'
-    }).populate({
-      path: 'comments',
-      select: 'user comment'
-    })
-    console.log(posts);
-    let resPosts = posts.map((item) => {
-      return {
-        user: item.user,
-        postId: item._id,
-        content: item.content,
-        image: item.image,
-        datetime_pub: item.createAt,
-        commets: item.comments
-      };
-    });
-    let payload = { count, limit, page, posts: resPosts };
-    res.status(200).send({ status: 'success', payload });
-  })(req, res, next)
-}
-
-exports.addComment = (req, res, next) => {
-  handleErrorAsync(async (req, res, next) => {
-    /*
-      #swagger.tags = ['Posts - 貼文']
-      #swagger.description = '留言 API'
-      #swagger.security = [{ apiKeyAuth: [] }]
-      #swagger.parameters['id'] = {
-        in: 'path',
-        description: '文章ID 測試用ID 6288960ac2049c4b43b9e5d3',
-        required: true,
-      }
-      #swagger.parameters['body'] = {
-        in: 'body',
-        description: '',
-        required: true,
-        schema: {
-          $comment: "測試留言",
-        }
-      }
-      #swagger.responses[200] = {
-        description: '被留言之文章原始資料',
-        schema: {
-          "status": "success",
-          "message": "success",
-          "data": {
-            "comments": {
-              "comment": "測試留言",
-              "user": "628897f1c31436e77ba6a8c1",
-              "post": "6288960ac2049c4b43b9e5d3",
-              "_id": "62960e0bec13021324e61213",
-              "createdAt": "2022-05-31T12:46:03.686Z"
+    if (!follow.length) {
+      // 處理初始使用者未有follow時的動態牆搜尋
+      // 之後可用資料庫語法來refact
+      const userList = await User.find({});
+      if (userList.length < 10) {
+        follow = userList
+          .filter((item) => item._id.toString() !== userId)
+          .map((item) => item._id.toString());
+      } else {
+        let cumulattor = 0;
+        follow = userList
+          .filter((item) => {
+            if (item._id.toString() === userId) {
+              return false;
             }
-          }
-        }
-      }
-    */
-      const userId = req.user.id
-      const postId = req.params.id
-      const {comment} = req.body
-      const userInfo = await User.findById(userId).exec()
-      if(!userInfo){
-        return next(appError(400,"無此發文者ID",next))
-      }
-    
-      if(!comment){
-        return next(appError(400,"無填寫留言",next))
-      }
-    
-      const newComment = await Comment.create({
-        post : postId,
-        user : userId,
-        comment
-      })
-      successHandler(res,'success',{comments: newComment})
-  })(req, res, next)
-}
-
-exports.delComment = (req, res, next)=>{
-  handleErrorAsync(async(req, res, next)=>{
-    /*
-      #swagger.tags = ['Posts - 貼文']
-      #swagger.description = '刪除留言 API'
-      #swagger.security = [{ apiKeyAuth: [] }]
-      #swagger.parameters['id'] = {
-        in: 'path',
-        description: '文章ID 測試用ID 62960ea87415f9b526ba6c7c',
-        required: true,
-      }
-      #swagger.responses[200] = {
-        description: '被留言之文章原始資料',
-        schema: {
-          "status": "success",
-          "message": "success",
-          "data": "已刪除此留言"
-        }
-      }
-    */
-    const userId = req.user.id;
-    const commentId = req.params.id;
-    const commentInfo = await Comment.findById(commentId).exec()
-    if(!commentInfo){
-      appError('400',"無此留言",next)
-    }
-    if(userId === commentInfo.user.id){
-      await Comment.findByIdAndDelete(commentInfo)
-    }else{
-      appError('400',"不同 userId 無法刪除",next)
-    }
-    successHandler(res,'success','已刪除此留言')
-  })(req, res, next)
-}
-
-exports.updateComment = (req, res, next)=>{
-  handleErrorAsync(async(req, res, next)=>{
-    /*
-      #swagger.tags = ['Posts - 貼文']
-      #swagger.description = '更新留言 API'
-      #swagger.security = [{ apiKeyAuth: [] }]
-      #swagger.parameters['id'] = {
-        in: 'path',
-        description: '文章ID 測試用ID 62960ed57415f9b526ba6c80',
-        required: true,
-      }
-      #swagger.parameters['body'] = {
-        in: 'body',
-        description: '',
-        required: true,
-        schema: {
-          $comment: "編輯留言",
-        }
-      }
-      #swagger.responses[200] = {
-        description: '被留言之文章原始資料',
-        schema: {
-          "status": "success",
-          "message": "success",
-          "data": {
-            "_id": "62960ed57415f9b526ba6c80",
-            "comment": "留言",
-            "user": {
-              "_id": "628897f1c31436e77ba6a8c1",
-              "userName": "Jolyne"
-            },
-            "post": "6288960ac2049c4b43b9e5d3",
-            "createdAt": "2022-05-31T12:49:25.687Z"
-          }
-        }
-      }
-    */
-    const userId = req.user.id;
-    const commentId = req.params.id;
-    const {comment} = req.body
-    const commentInfo = await Comment.findById(commentId).exec()
-    if(!commentInfo){
-      appError('400',"無此留言或已刪除",next)
-    }
-    
-    if(userId === commentInfo.user.id){
-      await Comment.findByIdAndUpdate(commentId,{comment})
-    }else{
-      appError('400',"不同 userId 無法編輯留言",next)
-    }
-    const newComment = await Comment.findById(commentId).exec()
-    successHandler(res,'success',newComment)
-  })(req, res, next)
-}
-
-exports.updateLike = (req, res, next) => {
-  handleErrorAsync(async(req, res, next) => {
-    /*
-      #swagger.tags = ['Posts - 貼文']
-      #swagger.description = '按讚/取消讚 API'
-      #swagger.security = [{ apiKeyAuth: [] }]
-      #swagger.parameters['body'] = {
-        in: 'body',
-        description: '',
-        required: true,
-        schema: {
-          $postId: "6288960ac2049c4b43b9e5d3", 
-          $userId: "62749ba20b0c853f222d8697",  
-        }
-      }
-      #swagger.responses[200] = {
-        description: '被留言之文章原始資料',
-        schema: {
-          "status": "success",
-          "message": {
-            "user": {
-              "gender": "notAccess",
-              "_id": "62749ba20b0c853f222d8697",
-              "avatar": "https://randomuser.me/api/portraits/lego/3.jpg",
-              "userName": "DDD",
-              "beFollowed": [
-                {
-                  "id": "62741e710b0c853f222d8691",
-                  "datetime_update": "2022-05-05T19:03:55.552Z"
-                }
-              ],
-              "follow": [
-                {
-                  "id": "62741e710b0c853f222d8691",
-                  "datetime_update": "2022-05-05T19:03:55.552Z"
-                }
-              ],
-              "likeList": [
-                "627bd5634b9b3a393e5eb87c",
-                "6288960ac2049c4b43b9e5d3"
-              ],
-              "createAt": "2022-05-21T09:49:12.543Z",
-              "updateAt": "2022-05-21T09:49:12.543Z"
-            },
-            "post": {
-              "_id": "6288960ac2049c4b43b9e5d3",
-              "user": "62749b880b0c853f222d8696",
-              "tags": [
-                "[test]"
-              ],
-              "type": "person",
-              "image": "https://i.picsum.photos/id/817/200/300.jpg?hmac=Egrlh6ZzXMOSu9esbUDMY8PhK3cBCmeqHyWBXm7dnHQ",
-              "content": "測試發文",
-              "likes": [
-                "62749ba20b0c853f222d8697"
-              ],
-              "createAt": "2022-05-21T07:34:34.522Z",
-              "comments": [
-                {
-                  "userName": "DDD",
-                  "userPhoto": "https://randomuser.me/api/portraits/lego/3.jpg",
-                  "message": "測試留言",
-                  "_id": "6288b266ea5a7a1cdc79cd04"
-                }
-              ]
+            if (cumulattor <= 10 && Math.random() > 0.5) {
+              cumulattor++;
+              return true;
+            } else {
+              return false;
             }
-          },
-          "data": []
-        }
+          })
+          .map((item) => item._id.toString());
       }
-    */
-    const { userId, postId } = req.body
-    // 是否存在 post , user id 
-    const user = await User.findOne({_id: userId})
-    const post = await Post.findOne({_id: postId})
-    
-    if(user !== null && post !== null){
-        // 行為 
-        const checkUserIdInPost = user.likeList.find( item => item === postId)
-        const checkPostIdInUser = post.likes.find(item => item === userId)
-        // 按讚存在 移除
-        if(checkUserIdInPost && checkPostIdInUser){
-          const user = await User.findByIdAndUpdate({_id: userId},
-            {$pull:{likeList: postId}},
-            {new: true})
-          const post = await Post.findByIdAndUpdate({_id: postId},
-            {$pull:{likes: userId}},
-            {new: true})
-            successHandler(res, {user, post})
-        // 按讚不存在 寫入
-        }else if(checkUserIdInPost === undefined && checkPostIdInUser === undefined){
-          const user = await User.findByIdAndUpdate({_id: userId},
-            {$push:{likeList: postId}},
-            {new: true})
-          const post = await Post.findByIdAndUpdate({_id: postId},
-            {$push:{likes: userId}},
-            {new: true})
+    }
+
+    follow.push(userId);
+    // console.log(follow);
+
+    filter.user = { $in: follow };
+  }
+
+  const count = await Post.find(filter).count();
+  const posts = await Post.find(filter).sort(sort).skip(skip).limit(limit).populate({
+    path: 'user',
+    select: 'userName avatar'
+  }).populate({
+    path: 'comments',
+    select: 'user comment'
+  })
+  console.log(posts);
+  let resPosts = posts.map((item) => {
+    return {
+      user: item.user,
+      postId: item._id,
+      content: item.content,
+      image: item.image,
+      datetime_pub: item.createAt,
+      commets: item.comments
+    };
+  });
+  let payload = { count, limit, page, posts: resPosts };
+  res.status(200).send({ status: 'success', payload });
+}
+
+exports.addComment = async (req, res, next) => {
+  const userId = req.user.id
+  const postId = req.params.id
+  const {comment} = req.body
+  const userInfo = await User.findById(userId).exec()
+  if(!userInfo){
+    return next(appError(400,"無此發文者ID",next))
+  }
+
+  if(!comment){
+    return next(appError(400,"無填寫留言",next))
+  }
+
+  const newComment = await Comment.create({
+    post : postId,
+    user : userId,
+    comment
+  })
+  successHandler(res,'success',{comments: newComment})
+}
+
+exports.delComment = async (req, res, next) => {
+  const userId = req.user.id;
+  const commentId = req.params.id;
+  const commentInfo = await Comment.findById(commentId).exec()
+  if(!commentInfo){
+    appError('400',"無此留言",next)
+  }
+  if(userId === commentInfo.user.id){
+    await Comment.findByIdAndDelete(commentInfo)
+  }else{
+    appError('400',"不同 userId 無法刪除",next)
+  }
+  successHandler(res,'success','已刪除此留言')
+}
+
+exports.updateComment = async (req, res, next)=>{
+  const userId = req.user.id;
+  const commentId = req.params.id;
+  const {comment} = req.body
+  const commentInfo = await Comment.findById(commentId).exec()
+  if(!commentInfo){
+    appError('400',"無此留言或已刪除",next)
+  }
+  
+  if(userId === commentInfo.user.id){
+    await Comment.findByIdAndUpdate(commentId,{comment})
+  }else{
+    appError('400',"不同 userId 無法編輯留言",next)
+  }
+  const newComment = await Comment.findById(commentId).exec()
+  successHandler(res,'success',newComment)
+}
+
+exports.updateLike = async (req, res, next) => {    
+  const { userId, postId } = req.body
+  // 是否存在 post , user id 
+  const user = await User.findOne({_id: userId})
+  const post = await Post.findOne({_id: postId})
+  
+  if(user !== null && post !== null){
+      // 行為 
+      const checkUserIdInPost = user.likeList.find( item => item === postId)
+      const checkPostIdInUser = post.likes.find(item => item === userId)
+      // 按讚存在 移除
+      if(checkUserIdInPost && checkPostIdInUser){
+        const user = await User.findByIdAndUpdate({_id: userId},
+          {$pull:{likeList: postId}},
+          {new: true})
+        const post = await Post.findByIdAndUpdate({_id: postId},
+          {$pull:{likes: userId}},
+          {new: true})
           successHandler(res, {user, post})
-        // 其他資料不對其問題
-        }else{
-          appError('404', 'post id 或  user id 有誤', next);
-        }
-    }else{
-      appError('404', 'post id 或  user id 有誤', next);
-    }
-  })(req, res, next)
+      // 按讚不存在 寫入
+      }else if(checkUserIdInPost === undefined && checkPostIdInUser === undefined){
+        const user = await User.findByIdAndUpdate({_id: userId},
+          {$push:{likeList: postId}},
+          {new: true})
+        const post = await Post.findByIdAndUpdate({_id: postId},
+          {$push:{likes: userId}},
+          {new: true})
+        successHandler(res, {user, post})
+      // 其他資料不對其問題
+      }else{
+        appError('404', 'post id 或  user id 有誤', next);
+      }
+  }else{
+    appError('404', 'post id 或  user id 有誤', next);
+  }
 }
 
 // --- 未用到API (後續待刪)--- start
