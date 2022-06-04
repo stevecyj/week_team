@@ -221,7 +221,7 @@ exports.updateLike = async (req, res, next) => {
         { $pull: { likes: userId } },
         { new: true }
       );
-      successHandler(res, 'success', { userId: user._id, postId: post.id });
+      successHandler(res, '已取消按讚', { userId: user._id, postId: post.id });
       // 按讚不存在 寫入
     } else if (checkUserIdInPost === undefined && checkPostIdInUser === undefined) {
       const user = await User.findByIdAndUpdate(
@@ -234,7 +234,7 @@ exports.updateLike = async (req, res, next) => {
         { $push: { likes: userId } },
         { new: true }
       );
-      successHandler(res, 'success', { userId: user._id, postId: post.id });
+      successHandler(res, '完成按讚', { userId: user._id, postId: post.id });
       // 其他資料不對其問題
     } else {
       appError('404', 'post id 或  user id 有誤', next);
