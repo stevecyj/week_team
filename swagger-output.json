@@ -4,7 +4,10 @@
   "host": "localhost:3005",
   "basePath": "/",
   "tags": [],
-  "schemes": ["https", "http"],
+  "schemes": [
+    "https",
+    "http"
+  ],
   "securityDefinitions": {
     "apiKeyAuth": {
       "type": "apiKey",
@@ -18,7 +21,9 @@
   "paths": {
     "/users/sign_up": {
       "post": {
-        "tags": ["Users - 使用者"],
+        "tags": [
+          "Users - 使用者"
+        ],
         "description": "註冊使用者 API",
         "parameters": [
           {
@@ -46,7 +51,12 @@
                   "example": "Qwer1234"
                 }
               },
-              "required": ["userName", "email", "confirmPassword", "password"]
+              "required": [
+                "userName",
+                "email",
+                "confirmPassword",
+                "password"
+              ]
             },
             "type": "string"
           }
@@ -85,7 +95,9 @@
     },
     "/users/sign_in": {
       "post": {
-        "tags": ["Users - 使用者"],
+        "tags": [
+          "Users - 使用者"
+        ],
         "description": "登入 API",
         "parameters": [
           {
@@ -105,7 +117,10 @@
                   "example": "Qwer1234"
                 }
               },
-              "required": ["email", "password"]
+              "required": [
+                "email",
+                "password"
+              ]
             },
             "type": "string"
           }
@@ -144,7 +159,9 @@
     },
     "/users/profile/{id}": {
       "get": {
-        "tags": ["Users - 使用者"],
+        "tags": [
+          "Users - 使用者"
+        ],
         "description": "取得單一使用者資料 API",
         "parameters": [
           {
@@ -238,7 +255,9 @@
     },
     "/users/password": {
       "post": {
-        "tags": ["Users - 使用者"],
+        "tags": [
+          "Users - 使用者"
+        ],
         "description": "重設使用者密碼 API",
         "parameters": [
           {
@@ -258,7 +277,10 @@
                   "example": "Qwer1235"
                 }
               },
-              "required": ["password", "confirmPassword"]
+              "required": [
+                "password",
+                "confirmPassword"
+              ]
             },
             "type": "string"
           }
@@ -302,7 +324,9 @@
     },
     "/users/profile": {
       "patch": {
-        "tags": ["Users - 使用者"],
+        "tags": [
+          "Users - 使用者"
+        ],
         "description": "編輯個人資料 API",
         "parameters": [
           {
@@ -326,7 +350,11 @@
                   "example": "female"
                 }
               },
-              "required": ["userName", "avatar", "gender"]
+              "required": [
+                "userName",
+                "avatar",
+                "gender"
+              ]
             },
             "type": "string"
           }
@@ -361,7 +389,9 @@
     },
     "/users/followers": {
       "get": {
-        "tags": ["Users - 使用者"],
+        "tags": [
+          "Users - 使用者"
+        ],
         "description": "取得使用者自身的所有追蹤 API",
         "parameters": [],
         "responses": {
@@ -463,7 +493,9 @@
     },
     "/users/follow": {
       "post": {
-        "tags": ["Users - 使用者"],
+        "tags": [
+          "Users - 使用者"
+        ],
         "description": "追蹤/取消追蹤 API",
         "parameters": [
           {
@@ -483,7 +515,10 @@
                   "example": "62811968820c4588fef6e57a"
                 }
               },
-              "required": ["userId", "followId"]
+              "required": [
+                "userId",
+                "followId"
+              ]
             },
             "type": "string"
           }
@@ -568,7 +603,9 @@
     },
     "/posts/post": {
       "post": {
-        "tags": ["Posts - 貼文"],
+        "tags": [
+          "Posts - 貼文"
+        ],
         "description": "新增貼文 API",
         "parameters": [
           {
@@ -600,7 +637,12 @@
                   "example": "https://i.picsum.photos/id/817/200/300.jpg?hmac=Egrlh6ZzXMOSu9esbUDMY8PhK3cBCmeqHyWBXm7dnHQ"
                 }
               },
-              "required": ["userId", "tags", "type", "content"]
+              "required": [
+                "userId",
+                "tags",
+                "type",
+                "content"
+              ]
             },
             "type": "string"
           }
@@ -644,13 +686,15 @@
     },
     "/posts/search": {
       "post": {
-        "tags": ["Posts - 貼文"],
+        "tags": [
+          "Posts - 貼文"
+        ],
         "description": "搜尋貼文 API",
         "parameters": [
           {
             "name": "body",
             "in": "body",
-            "description": "keyword: 搜尋關鍵字，空值為全部搜尋,\n sortby: 只提供最新貼文時間排序,\n limit: 每頁幾筆,\n page: 第幾頁開始,\n userId: 填入登入使用者，會搜尋使用者與使用者追蹤者貼文,\n authorId: 搜尋特定使用者所有發文，此欄如有填，則userId欄位無作用\n 不填keyword, userId, authorId可以搜尋全部文章/n userId和authorId二選一填，userId用在個人動態牆，authorId用在特定使用者所有發文",
+            "description": "keyword: 搜尋關鍵字，空值為全部搜尋,\n sortby: datetime_pub最新貼文時間排序 datetime_pub_asc舊到新排序,\n limit: 每頁幾筆,\n page: 第幾頁開始,\n userId: 填入登入使用者，會搜尋使用者與使用者追蹤者貼文,\n authorId: 搜尋特定使用者所有發文，此欄如有填，則userId欄位無作用\n 不填keyword, userId, authorId可以搜尋全部文章/n userId和authorId二選一填，userId用在個人動態牆，authorId用在特定使用者所有發文",
             "schema": {
               "type": "object",
               "properties": {
@@ -800,7 +844,9 @@
     },
     "/posts/likedPosts": {
       "get": {
-        "tags": ["Posts - 貼文"],
+        "tags": [
+          "Posts - 貼文"
+        ],
         "description": "搜尋貼文 API",
         "parameters": [
           {
@@ -911,7 +957,9 @@
     },
     "/posts/comment/{id}": {
       "post": {
-        "tags": ["Posts - 貼文"],
+        "tags": [
+          "Posts - 貼文"
+        ],
         "description": "留言 API",
         "parameters": [
           {
@@ -934,7 +982,9 @@
                   "example": "測試留言"
                 }
               },
-              "required": ["comment"]
+              "required": [
+                "comment"
+              ]
             },
             "type": "string"
           }
@@ -964,8 +1014,21 @@
                           "example": "測試留言"
                         },
                         "user": {
-                          "type": "string",
-                          "example": "628897f1c31436e77ba6a8c1"
+                          "type": "object",
+                          "properties": {
+                            "_id": {
+                              "type": "string",
+                              "example": "628897f1c31436e77ba6a8c1"
+                            },
+                            "userName": {
+                              "type": "string",
+                              "example": "Jolyne"
+                            },
+                            "avatar": {
+                              "type": "string",
+                              "example": "https://randomuser.me/api/portraits/lego/3.jpg"
+                            }
+                          }
                         },
                         "post": {
                           "type": "string",
@@ -973,11 +1036,11 @@
                         },
                         "_id": {
                           "type": "string",
-                          "example": "62960e0bec13021324e61213"
+                          "example": "629ade349a98662867513293"
                         },
                         "createdAt": {
                           "type": "string",
-                          "example": "2022-05-31T12:46:03.686Z"
+                          "example": "2022-06-04T04:23:16.548Z"
                         }
                       }
                     }
@@ -997,7 +1060,9 @@
         ]
       },
       "delete": {
-        "tags": ["Posts - 貼文"],
+        "tags": [
+          "Posts - 貼文"
+        ],
         "description": "刪除留言 API",
         "parameters": [
           {
@@ -1040,7 +1105,9 @@
         ]
       },
       "patch": {
-        "tags": ["Posts - 貼文"],
+        "tags": [
+          "Posts - 貼文"
+        ],
         "description": "更新留言 API",
         "parameters": [
           {
@@ -1063,7 +1130,9 @@
                   "example": "編輯留言"
                 }
               },
-              "required": ["comment"]
+              "required": [
+                "comment"
+              ]
             },
             "type": "string"
           }
@@ -1132,7 +1201,9 @@
     },
     "/posts/like": {
       "patch": {
-        "tags": ["Posts - 貼文"],
+        "tags": [
+          "Posts - 貼文"
+        ],
         "description": "按讚/取消讚 API",
         "parameters": [
           {
@@ -1152,7 +1223,10 @@
                   "example": "62749ba20b0c853f222d8697"
                 }
               },
-              "required": ["postId", "userId"]
+              "required": [
+                "postId",
+                "userId"
+              ]
             },
             "type": "string"
           }
@@ -1200,7 +1274,9 @@
     },
     "/upload/image": {
       "post": {
-        "tags": ["Files - 圖片上傳"],
+        "tags": [
+          "Files - 圖片上傳"
+        ],
         "description": "上傳圖片取得圖片網址 API",
         "parameters": [],
         "responses": {}
