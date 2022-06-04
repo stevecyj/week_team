@@ -50,7 +50,7 @@ router.post(
     #swagger.security = [{ apiKeyAuth: [] }]
     #swagger.parameters['body'] = {
       in: 'body',
-      description: 'keyword: 搜尋關鍵字，空值為全部搜尋,\n sortby: 只提供最新貼文時間排序,\n  limit: 每頁幾筆,\n page: 第幾頁開始,\n userId: 填入登入使用者，會搜尋使用者與使用者追蹤者貼文,\n authorId: 搜尋特定使用者所有發文，此欄如有填，則userId欄位無作用\n 不填keyword, userId, authorId可以搜尋全部文章/n userId和authorId二選一填，userId用在個人動態牆，authorId用在特定使用者所有發文',
+      description: 'keyword: 搜尋關鍵字，空值為全部搜尋,\n sortby: datetime_pub最新貼文時間排序 datetime_pub_asc舊到新排序,\n  limit: 每頁幾筆,\n page: 第幾頁開始,\n userId: 填入登入使用者，會搜尋使用者與使用者追蹤者貼文,\n authorId: 搜尋特定使用者所有發文，此欄如有填，則userId欄位無作用\n 不填keyword, userId, authorId可以搜尋全部文章/n userId和authorId二選一填，userId用在個人動態牆，authorId用在特定使用者所有發文',
       schema: {
         keyword: "", 
         sortby: "datetime_pub",
@@ -180,10 +180,14 @@ router.post(
         "data": {
           "comments": {
             "comment": "測試留言",
-            "user": "628897f1c31436e77ba6a8c1",
+            "user": {
+              "_id": "628897f1c31436e77ba6a8c1",
+              "userName": "Jolyne",
+              "avatar": "https://randomuser.me/api/portraits/lego/3.jpg"
+            },
             "post": "6288960ac2049c4b43b9e5d3",
-            "_id": "62960e0bec13021324e61213",
-            "createdAt": "2022-05-31T12:46:03.686Z"
+            "_id": "629ade349a98662867513293",
+            "createdAt": "2022-06-04T04:23:16.548Z"
           }
         }
       }

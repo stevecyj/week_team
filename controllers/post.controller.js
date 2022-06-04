@@ -33,7 +33,7 @@ exports.create = async (req, res, next) => {
 exports.search = async (req, res, next) => {
   let { keyword, sortby, limit = 10, page = 1, userId, authorId } = req.body;
   let filter = keyword ? { content: new RegExp(`${keyword}`) } : {};
-  let sort = sortby === 'datetime_pub' ? { createAt: -1 } : {};
+  let sort = sortby === 'datetime_pub' ? { createAt: -1 } : sortby === 'datetime_pub_asc' ? { createAt: 1 } : {};
   if (page < 0) {
     page = 1;
   }
@@ -149,7 +149,7 @@ exports.addComment = async (req, res, next) => {
   const userId = req.user.id;
   const postId = req.params.id;
   const { comment } = req.body;
-  const userInfo = await User.findById(userId).exec();
+  const userInfo = await User.findById(userId, 'id userName avatar').exec();
   if (!userInfo) {
     appError('400', '無此發文者ID', next);
   }
@@ -160,7 +160,7 @@ exports.addComment = async (req, res, next) => {
 
   const newComment = await Comment.create({
     post: postId,
-    user: userId,
+    user: userInfo,
     comment,
   });
   successHandler(res, 'success', { comments: newComment });
